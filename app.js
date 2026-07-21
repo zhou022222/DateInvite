@@ -375,16 +375,14 @@
           throw new Error(data.error || '创建失败');
         }
 
-        // 折叠表单，展示链接
-        const panel = $('createForm');
-        const linkbox = $('linkbox');
-        linkbox.innerHTML = `
-          <p class="linkbox-title">✅ 邀请已创建</p>
+        // 展示链接
+        const box = $('linkbox');
+        box.style.display = 'block';
+        box.innerHTML = `
+          <div style="margin-bottom:8px;color:#e2bc70;font-size:14px">✅ 邀请已创建！把这个链接发给 TA 👇</div>
           <div class="link-copy">${escHtml(data.link)}</div>
-          <button class="btn btn-primary" id="copyLinkBtn" type="button" style="font-size:14px;min-height:46px">📋 复制链接</button>
+          <button class="btn btn-primary" id="copyLinkBtn" type="button" style="margin-top:12px;width:100%">📋 复制链接</button>
         `;
-        // 先显示 linkbox 内容（但不可见），再触发折叠动画
-        panel.classList.add('collapsed');
         document.getElementById('copyLinkBtn').addEventListener('click', () => {
           navigator.clipboard.writeText(data.link).then(() => {
             $('copyLinkBtn').textContent = '✓ 已复制';
@@ -392,7 +390,8 @@
           });
         });
 
-        // 清空输入但保留称呼
+        // 清空表单但保留称呼
+        $('cr_to').value = '';
         $('cr_intro').value = '想约你吃顿好吃的';
         $('cr_note').value = '';
 
