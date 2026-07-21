@@ -76,10 +76,14 @@
 
   // 切换 body 溢出控制
   if (inviteId) {
+    document.body.classList.add('recipient-mode');
+    document.body.classList.remove('creator-mode');
     document.body.style.overflow = 'hidden';
     // ══════════════ 受邀模式：8 屏流程 ══════════════
     initRecipientMode(inviteId);
   } else {
+    document.body.classList.add('creator-mode');
+    document.body.classList.remove('recipient-mode');
     document.body.style.overflow = 'auto';
     // ══════════════ 创作者模式 ══════════════
     initCreatorMode();
@@ -160,6 +164,9 @@
     function coverTitleHtml() {
       return `<span class="title-line">${esc(config.intro)}</span><span class="title-line">准备了一个小 <span class="gold gold-word">Moment</span></span>`;
     }
+    function coverTitleClass() {
+      return Array.from(String(config.intro || '')).length > 10 ? ' title--compact' : '';
+    }
     function fromTitleHtml() {
       const from = String(config.from || '').trim() || '一个很在意你的人';
       if (from.startsWith('一个') && from.length > 2) {
@@ -173,7 +180,7 @@
         <div class="hero hero--cover">
           <div class="hero-copy">
             <div class="eyebrow">A moment for ${esc(config.to)}</div>
-            <h1 class="title title--cover">${coverTitleHtml()}</h1>
+            <h1 class="title title--cover${coverTitleClass()}">${coverTitleHtml()}</h1>
             <p class="subtitle">请收下这份约饭邀请</p>
           </div>
           <div class="invite-visual">

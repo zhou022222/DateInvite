@@ -26,6 +26,17 @@ body {
 button, input, textarea { font: inherit; }
 button { -webkit-tap-highlight-color: transparent; }
 
+body.recipient-mode {
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+body.recipient-mode .phone {
+  overflow: hidden;
+}
+
 .phone {
   position: relative;
   width: 100vw;
@@ -42,9 +53,10 @@ button { -webkit-tap-highlight-color: transparent; }
 .app {
   position: relative;
   width: 100%;
-  min-height: 100svh;
+  min-height: 100dvh;
   overflow: hidden;
   isolation: isolate;
+  container-type: inline-size;
   background:
     radial-gradient(90% 38% at 50% 76%, rgba(122, 40, 55, .32), transparent 68%),
     radial-gradient(70% 55% at 0% 10%, rgba(159, 74, 91, .18), transparent 62%),
@@ -663,7 +675,10 @@ textarea::placeholder { color: #9d8f99; }
 }
 
 .app .screen {
-  padding: calc(78px + env(safe-area-inset-top)) 34px calc(24px + env(safe-area-inset-bottom));
+  height: 100%;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: calc(72px + env(safe-area-inset-top)) 30px calc(18px + env(safe-area-inset-bottom));
 }
 
 .app .hero {
@@ -673,48 +688,62 @@ textarea::placeholder { color: #9d8f99; }
 }
 
 .app .hero--cover {
-  min-height: calc(100svh - 102px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  height: 100%;
+  min-height: 0;
   display: grid;
-  grid-template-rows: minmax(250px, .94fr) minmax(220px, .72fr) auto;
+  grid-template-rows: minmax(0, .88fr) minmax(0, .72fr) auto;
   align-items: center;
-  gap: 4px;
+  gap: clamp(6px, 1.4dvh, 14px);
 }
 
 .app .hero-copy {
   align-self: end;
-  padding-top: 3svh;
+  width: 100%;
+  max-width: 100%;
+  padding-top: clamp(4px, 1.2dvh, 12px);
 }
 
 .app .eyebrow {
-  margin: 0 0 18px;
+  margin: 0 0 clamp(12px, 2dvh, 18px);
   color: rgba(230, 189, 110, .88);
-  font-size: 11px;
+  font-size: clamp(9px, 2.5cqw, 11px);
   font-weight: 700;
-  letter-spacing: .4em;
+  letter-spacing: .36em;
 }
 
 .app .title {
   font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
-  font-size: clamp(30px, 8.4vw, 42px);
+  font-size: clamp(25px, 7.2cqw, 34px);
   line-height: 1.42;
   font-weight: 300;
-  letter-spacing: .035em;
+  letter-spacing: .015em;
   color: #fffaf6;
-  text-wrap: balance;
+  max-width: 100%;
   text-shadow:
     0 2px 0 rgba(255,255,255,.02),
     0 18px 42px rgba(0,0,0,.42);
 }
 
 .app .title--cover {
-  font-size: clamp(28px, 7.4vw, 38px);
-  line-height: 1.48;
-  letter-spacing: .03em;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  font-size: clamp(24px, 7.1cqw, 31px);
+  line-height: 1.5;
+  letter-spacing: .006em;
 }
 
 .app .title-line {
   display: block;
-  white-space: nowrap;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.app .title--compact {
+  font-size: clamp(21px, 6.2cqw, 28px);
+  letter-spacing: 0;
 }
 
 .app .title .gold {
@@ -727,7 +756,8 @@ textarea::placeholder { color: #9d8f99; }
 .app .title .gold-word {
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 700;
-  font-size: 1.06em;
+  font-size: 1.02em;
+  white-space: nowrap;
 }
 
 .app .title .gold-name {
@@ -736,10 +766,10 @@ textarea::placeholder { color: #9d8f99; }
 }
 
 .app .subtitle {
-  max-width: 330px;
-  margin-top: 18px;
+  max-width: min(100%, 300px);
+  margin-top: clamp(10px, 1.8dvh, 16px);
   color: rgba(255, 244, 238, .72);
-  font-size: 14px;
+  font-size: clamp(12px, 3.2cqw, 14px);
   line-height: 1.7;
   letter-spacing: .08em;
 }
@@ -749,22 +779,23 @@ textarea::placeholder { color: #9d8f99; }
   width: 100%;
   display: grid;
   place-items: center;
-  transform: translateY(2px);
+  min-height: 0;
+  transform: translateY(0);
 }
 
 .app .art--premium {
-  width: min(78vw, 318px);
-  height: 232px;
+  width: min(74cqw, 286px);
+  height: min(27dvh, 210px);
   margin: 0 auto;
   transform: rotate(-2deg);
   filter: drop-shadow(0 26px 34px rgba(0,0,0,.48));
 }
 
 .app .art--premium .letter {
-  width: 192px;
-  height: 118px;
-  left: 54px;
-  top: 26px;
+  width: 61%;
+  height: 51%;
+  left: 17%;
+  top: 11%;
   border-radius: 7px 7px 2px 2px;
   transform: rotate(-1deg);
   background:
@@ -776,10 +807,10 @@ textarea::placeholder { color: #9d8f99; }
 }
 
 .app .art--premium .envelope {
-  width: 264px;
-  height: 158px;
-  left: 24px;
-  bottom: 17px;
+  width: 84%;
+  height: 68%;
+  left: 8%;
+  bottom: 7%;
   border-radius: 12px 12px 18px 18px;
   transform: rotate(-4deg);
   background:
@@ -805,11 +836,11 @@ textarea::placeholder { color: #9d8f99; }
 }
 
 .app .art--premium .seal {
-  width: 62px;
-  height: 62px;
-  left: 124px;
+  width: clamp(48px, 15cqw, 58px);
+  height: clamp(48px, 15cqw, 58px);
+  left: calc(50% - min(7.5cqw, 29px));
   bottom: 0;
-  font-size: 28px;
+  font-size: clamp(22px, 6cqw, 26px);
   border: 3px solid rgba(235, 181, 94, .7);
   background:
     radial-gradient(circle at 38% 30%, #ef6b68 0 12%, #ad2337 48%, #5f0e24 100%);
@@ -820,7 +851,7 @@ textarea::placeholder { color: #9d8f99; }
 
 .app .hero--cover .actions {
   align-self: end;
-  width: min(100%, 340px);
+  width: min(100%, 320px);
   margin: 0 auto;
   padding-bottom: max(4px, env(safe-area-inset-bottom));
 }
@@ -832,7 +863,7 @@ textarea::placeholder { color: #9d8f99; }
 }
 
 .app .btn {
-  min-height: 58px;
+  min-height: clamp(50px, 7.4dvh, 58px);
   border-radius: 999px;
   border-color: rgba(230, 189, 110, .24);
   font-weight: 500;
@@ -846,7 +877,7 @@ textarea::placeholder { color: #9d8f99; }
     0 20px 42px rgba(72, 17, 43, .46),
     inset 0 1px rgba(255,255,255,.25),
     inset 0 -2px rgba(66,22,32,.2);
-  font-size: 16px;
+  font-size: clamp(14px, 3.7cqw, 16px);
   letter-spacing: .16em;
 }
 
@@ -1005,4 +1036,100 @@ textarea::placeholder { color: #9d8f99; }
   .app .hero--cover .actions { width: min(100%, 318px); }
   .app .btn-primary { min-height: 54px; font-size: 15px; }
   .app .choice-card { min-height: 100px; }
+}
+
+body.recipient-mode .form-screen {
+  overflow: hidden;
+}
+
+body.recipient-mode .choice-page,
+body.recipient-mode .done-page {
+  min-height: 100%;
+  padding-top: clamp(6px, 1.6dvh, 18px);
+}
+
+body.recipient-mode .choice-grid {
+  gap: clamp(7px, 1.2dvh, 12px);
+}
+
+body.recipient-mode .choice-card {
+  min-height: clamp(78px, 13dvh, 116px);
+  border-radius: clamp(16px, 4cqw, 22px);
+  padding: clamp(8px, 1.8dvh, 14px) 6px;
+}
+
+body.recipient-mode .choice-card.other {
+  min-height: clamp(60px, 9.5dvh, 82px);
+}
+
+body.recipient-mode .choice-icon {
+  font-size: clamp(24px, 7cqw, 32px);
+}
+
+body.recipient-mode .choice-name {
+  font-size: clamp(12px, 3.4cqw, 15px);
+}
+
+body.recipient-mode .section-title {
+  font-size: clamp(24px, 7cqw, 36px);
+}
+
+body.recipient-mode .section-subtitle {
+  margin-top: clamp(8px, 1.4dvh, 14px);
+  font-size: clamp(12px, 3.4cqw, 15px);
+}
+
+body.recipient-mode .ornament {
+  margin: clamp(12px, 2dvh, 22px) auto;
+}
+
+body.recipient-mode .form-actions {
+  padding-top: clamp(10px, 2dvh, 22px);
+}
+
+body.recipient-mode .message-box {
+  margin-top: clamp(12px, 2dvh, 22px);
+}
+
+body.recipient-mode textarea {
+  min-height: clamp(76px, 13dvh, 112px);
+}
+
+@media (max-height: 680px) {
+  .app .topbar {
+    height: calc(62px + env(safe-area-inset-top));
+  }
+  .app .brand-mark {
+    width: 36px;
+    height: 36px;
+  }
+  .app .progress-wrap {
+    width: 112px;
+  }
+  .app .screen {
+    padding-top: calc(62px + env(safe-area-inset-top));
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));
+  }
+  .app .hero--cover {
+    grid-template-rows: minmax(0, .82fr) minmax(0, .56fr) auto;
+  }
+  .app .eyebrow {
+    margin-bottom: 8px;
+    font-size: 9px;
+  }
+  .app .title--cover {
+    font-size: clamp(21px, 6.3cqw, 27px);
+    line-height: 1.38;
+  }
+  .app .subtitle {
+    margin-top: 8px;
+    font-size: 12px;
+  }
+  .app .art--premium {
+    width: min(66cqw, 246px);
+    height: min(23dvh, 166px);
+  }
+  .app .btn {
+    min-height: 48px;
+  }
 }
