@@ -375,39 +375,69 @@
           throw new Error(data.error || '创建失败');
         }
 
-        // 展示链接
+        // 隐藏表单，展示邀请函预览
+        $('formFields').style.display = 'none';
+        const preview = $('invitePreview');
+        preview.style.display = 'block';
+        $('previewTo').textContent = to;
+        $('previewFrom').textContent = from;
+        $('previewIntro').textContent = intro;
+        $('previewNote').textContent = note || '我认真准备了这份约饭邀请。';
+
+        // 展示链接复制区
         const box = $('linkbox');
         box.style.display = 'block';
+        box.classList.add('show');
         box.innerHTML = `
-          <div style="margin-bottom:8px;color:#e2bc70;font-size:14px">✅ 邀请已创建！把这个链接发给 TA 👇</div>
-          <div class="link-copy">${escHtml(data.link)}</div>
-          <button class="btn btn-primary" id="copyLinkBtn" type="button" style="margin-top:12px;width:100%">📋 复制链接</button>
+          <div class="linkbox-header">
+            <span class="linkbox-label">邀请链接</span>
+            <span class="linkbox-status">✓ 邀请已准备好</span>
+          </div>
+          <div class="linkbox-row">
+            <div class="linkbox-input">${escHtml(data.link)}</div>
+            <button class="linkbox-copy" id="copyLinkBtn" type="button">复制链接</button>
+          </div>
+          <div class="linkbox-actions">
+            <button class="btn btn-primary" id="previewLinkBtn" type="button">打开邀请预览</button>
+            <button class="btn btn-secondary" id="newInviteBtn" type="button">再创建一份</button>
+          </div>
         `;
         document.getElementById('copyLinkBtn').addEventListener('click', () => {
           navigator.clipboard.writeText(data.link).then(() => {
             $('copyLinkBtn').textContent = '✓ 已复制';
-            setTimeout(() => { $('copyLinkBtn').textContent = '📋 复制链接'; }, 2000);
+            setTimeout(() => { $('copyLinkBtn').textContent = '复制链接'; }, 2000);
           });
         });
-
-        // 清空表单但保留称呼
-        $('cr_to').value = '';
-        $('cr_intro').value = '想约你吃顿好吃的';
-        $('cr_note').value = '';
+        document.getElementById('previewLinkBtn').addEventListener('click', () => {
+          window.open(data.link, '_blank');
+        });
+        document.getElementById('newInviteBtn').addEventListener('click', () => {
+          $('formFields').style.display = 'block';
+          preview.style.display = 'none';
+          box.style.display = 'none';
+          box.classList.remove('show');
+          box.innerHTML = '';
+          $('cr_to').value = '';
+          $('cr_intro').value = '想约你吃顿好吃的';
+          $('cr_note').value = '';
+        });
 
       } catch (err) {
         const linkbox = $('linkbox');
         // 不折叠，直接在表单下方显示错误
         linkbox.style.display = 'block';
+        linkbox.classList.add('show');
         const msg = err.name === 'AbortError'
           ? '请求超时，服务器可能正在从休眠中唤醒（约需 30 秒），请稍候重试🙏'
           : `❌ 创建失败：${err.message}`;
         linkbox.innerHTML = `
-          <div style="color:#e06c75;font-size:13px;margin-bottom:10px">${msg}</div>
-          <button class="btn btn-primary" id="retryCreateBtn" type="button" style="min-height:46px;font-size:14px">🔄 重试</button>
+          <div style="color:#e06c75;font-size:13px;margin-bottom:12px">${msg}</div>
+          <button class="btn btn-primary" id="retryCreateBtn" type="button" style="min-height:46px;font-size:14px;width:100%">🔄 重试</button>
         `;
         document.getElementById('retryCreateBtn')?.addEventListener('click', () => {
           linkbox.style.display = 'none';
+          linkbox.classList.remove('show');
+          linkbox.innerHTML = '';
           $('generateBtn').click();
         });
       } finally {

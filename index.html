@@ -8,6 +8,9 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <link rel="alternate icon" href="./favicon.ico" />
   <title>Moment - 约会邀请</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -15,31 +18,58 @@
     <!-- ===== 创作者模式 ===== -->
     <div id="creatorMode" class="mode-creator" style="display:none">
       <main class="creator">
-        <button class="btn-history-icon" id="historyBtn" type="button" aria-label="历史记录">📋</button>
+        <button class="btn-history-icon" id="historyBtn" type="button" aria-label="历史记录">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+            <path d="M12 7v5l4 2"/>
+          </svg>
+        </button>
         <div class="eyebrow">Create your moment</div>
         <h1>创建一份约会邀请</h1>
         <p>填写下面几项，生成一个可分享链接。对方打开后可以选择吃什么、去哪里、什么时候见面，回应会自动保存回来。</p>
 
         <section class="panel" id="createForm">
-          <div class="field">
-            <label for="cr_to">怎么称呼对方</label>
-            <input id="cr_to" maxlength="20" value="你" />
+          <div id="formFields">
+            <div class="field">
+              <label for="cr_to">怎么称呼对方</label>
+              <input id="cr_to" maxlength="20" value="你" />
+            </div>
+            <div class="field">
+              <label for="cr_from">怎么称呼你</label>
+              <input id="cr_from" maxlength="30" value="一个很在意你的人" />
+            </div>
+            <div class="field">
+              <label for="cr_intro">首页邀请文案</label>
+              <input id="cr_intro" maxlength="30" value="想约你吃顿好吃的" />
+            </div>
+            <div class="field">
+              <label for="cr_note">补充一句话</label>
+              <textarea id="cr_note" maxlength="80">我认真准备了这份约饭邀请。</textarea>
+            </div>
+            <div class="creator-actions">
+              <button class="btn btn-primary" id="generateBtn" type="button">✨ 生成邀请链接</button>
+            </div>
           </div>
-          <div class="field">
-            <label for="cr_from">怎么称呼你</label>
-            <input id="cr_from" maxlength="30" value="一个很在意你的人" />
+
+          <!-- 生成后的邀请函预览 -->
+          <div id="invitePreview" class="invite-preview" style="display:none">
+            <p class="preview-label">邀请函已生成</p>
+            <div class="preview-card">
+              <div class="preview-corner preview-corner-tl"></div>
+              <div class="preview-corner preview-corner-tr"></div>
+              <div class="preview-corner preview-corner-bl"></div>
+              <div class="preview-corner preview-corner-br"></div>
+              <p class="preview-eyebrow">INVITATION READY</p>
+              <div class="preview-seal">♡</div>
+              <p class="preview-sub">一份专属邀约</p>
+              <h2 class="preview-title">给 <span id="previewTo">你</span> 的约会邀请</h2>
+              <p class="preview-message" id="previewIntro">想约你吃顿好吃的。</p>
+              <p class="preview-note" id="previewNote">我认真准备了这份约饭邀请。</p>
+              <p class="preview-from">From · <span id="previewFrom">一个很在意你的人</span></p>
+            </div>
           </div>
-          <div class="field">
-            <label for="cr_intro">首页邀请文案</label>
-            <input id="cr_intro" maxlength="30" value="想约你吃顿好吃的" />
-          </div>
-          <div class="field">
-            <label for="cr_note">补充一句话</label>
-            <textarea id="cr_note" maxlength="80">我认真准备了这份约饭邀请。</textarea>
-          </div>
-          <div class="creator-actions">
-            <button class="btn btn-primary" id="generateBtn" type="button">✨ 生成邀请链接</button>
-          </div>
+
           <div id="linkbox" class="linkbox"></div>
         </section>
       </main>

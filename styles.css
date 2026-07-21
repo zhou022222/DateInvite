@@ -112,11 +112,11 @@ button { -webkit-tap-highlight-color: transparent; }
 .brand { display: flex; align-items: center; gap: 9px; background: none; border: 0; color: var(--ink); padding: 0; cursor: pointer; }
 .brand-mark {
   width: 36px; height: 36px; display: grid; place-items: center;
-  border-radius: 50%; font-family: Georgia, serif; font-size: 16px; color: #24130e;
+  border-radius: 50%; font-family: "Noto Sans SC", sans-serif; font-size: 16px; color: #24130e;
   background: radial-gradient(circle at 35% 25%, #f5dd9d, #bb8242 58%, #6b3d23 100%);
   box-shadow: inset 0 1px 1px rgba(255,255,255,.55), 0 6px 20px rgba(0,0,0,.28);
 }
-.brand-text { font-family: Georgia, serif; letter-spacing: .08em; font-size: 15px; opacity: .9; }
+.brand-text { font-family: "Noto Sans SC", sans-serif; letter-spacing: .08em; font-size: 15px; opacity: .9; }
 .progress-wrap { width: 118px; text-align: right; }
 .step-label { font-size: 12px; letter-spacing: .12em; color: rgba(255,255,255,.74); margin-bottom: 8px; }
 .progress { height: 3px; border-radius: 99px; background: rgba(255,255,255,.12); overflow: hidden; }
@@ -139,7 +139,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .eyebrow { color: var(--gold); font-size: 11px; letter-spacing: .42em; text-transform: uppercase; margin-bottom: 22px; }
 .title {
   margin: 0;
-  font-family: "ZCOOL XiaoWei", "Noto Sans SC", serif;
+  font-family: "Noto Sans SC", sans-serif;
   font-size: clamp(38px, 9.5vw, 54px);
   line-height: 1.35;
   font-weight: 400;
@@ -190,7 +190,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .choice-name { font-size: 15px; letter-spacing: .05em; }
 .choice-card.other { grid-column: 1 / -1; min-height: 82px; flex-direction: row; gap: 15px; }
 
-.section-title { text-align: center; margin: 5px 0 0; font-family: "ZCOOL XiaoWei", serif; font-size: clamp(32px, 8vw, 44px); font-weight: 400; letter-spacing: .04em; }
+.section-title { text-align: center; margin: 5px 0 0; font-family: "Noto Sans SC", sans-serif; font-size: clamp(32px, 8vw, 44px); font-weight: 400; letter-spacing: .04em; }
 .section-subtitle { text-align: center; margin-top: 12px; color: var(--muted); font-size: 14px; letter-spacing: .06em; }
 .form-screen { justify-content: flex-start; padding-top: calc(88px + env(safe-area-inset-top)); overflow-y: auto; scrollbar-width: none; }
 .form-screen::-webkit-scrollbar { display: none; }
@@ -286,7 +286,7 @@ textarea::placeholder { color: #9d8f99; }
 }
 .creator .eyebrow { margin-bottom: 18px; }
 .creator h1 {
-  font-family: "ZCOOL XiaoWei", serif;
+  font-family: "Noto Sans SC", sans-serif;
   font-weight: 400;
   font-size: 42px;
   margin: 12px 0;
@@ -315,27 +315,165 @@ textarea::placeholder { color: #9d8f99; }
 .field textarea { min-height: 90px; resize: none; }
 .creator-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .creator-actions .btn { min-width: 160px; }
+.tip { font-size: 12px; color: #988b94; margin-top: 16px; }
+
+/* ═════════════════════════════════════
+   生成后的邀请函预览
+   ═════════════════════════════════════ */
+.invite-preview {
+  animation: fadeIn .45s ease both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.preview-label {
+  text-align: center;
+  font-size: 12px;
+  color: #9d8f99;
+  margin: 0 0 14px;
+  letter-spacing: .08em;
+}
+.preview-card {
+  position: relative;
+  border-radius: 22px;
+  padding: 34px 22px 28px;
+  text-align: center;
+  background:
+    radial-gradient(120% 60% at 50% 0%, rgba(163, 65, 94, .22), transparent 60%),
+    linear-gradient(160deg, rgba(45, 22, 40, .9), rgba(22, 12, 24, .95));
+  border: 1px solid rgba(230, 189, 110, .35);
+  box-shadow:
+    0 24px 60px rgba(0,0,0,.38),
+    inset 0 1px rgba(255,255,255,.04);
+}
+.preview-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: rgba(230, 189, 110, .65);
+  border-style: solid;
+  border-width: 0;
+}
+.preview-corner-tl { top: 14px; left: 14px; border-top-width: 1.5px; border-left-width: 1.5px; }
+.preview-corner-tr { top: 14px; right: 14px; border-top-width: 1.5px; border-right-width: 1.5px; }
+.preview-corner-bl { bottom: 14px; left: 14px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+.preview-corner-br { bottom: 14px; right: 14px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+
+.preview-eyebrow {
+  font-size: 10px;
+  letter-spacing: .28em;
+  color: rgba(230, 189, 110, .85);
+  margin: 0 0 18px;
+  text-transform: uppercase;
+}
+.preview-seal {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 24px;
+  color: #ffd98d;
+  background: radial-gradient(circle at 42% 35%, #c64c55, #7d182d 62%, #450c20);
+  border: 2px solid rgba(230, 189, 110, .45);
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+}
+.preview-sub {
+  font-size: 12px;
+  color: #c9bbc5;
+  margin: 0 0 8px;
+  letter-spacing: .12em;
+}
+.preview-title {
+  font-family: "Noto Sans SC", sans-serif;
+  font-size: 26px;
+  font-weight: 500;
+  color: #fff9f5;
+  margin: 0 0 18px;
+  line-height: 1.4;
+}
+.preview-title span { color: var(--gold); }
+.preview-message,
+.preview-note {
+  font-size: 14px;
+  color: #d8cbd1;
+  line-height: 1.7;
+  margin: 0 0 6px;
+}
+.preview-note {
+  font-size: 13px;
+  color: #b8aab3;
+  min-height: 1.6em;
+}
+.preview-from {
+  text-align: right;
+  font-size: 13px;
+  color: #9d8f99;
+  margin: 20px 0 0;
+  font-style: italic;
+}
+.preview-from span { color: #d8cbd1; font-style: normal; }
+
+/* 链接区域 — 生成后 */
 .linkbox {
   margin-top: 18px;
-  padding: 14px;
-  border-radius: 14px;
-  background: rgba(10,6,10,.58);
-  word-break: break-all;
-  color: #d9c8d1;
-  font-size: 12px;
   display: none;
 }
-.link-copy {
-  background: rgba(15,8,14,.6);
-  border: 1px solid rgba(226,188,112,.2);
-  border-radius: 10px;
-  padding: 10px 12px;
-  font-family: monospace;
-  font-size: 13px;
-  color: #e2bc70;
-  word-break: break-all;
+.linkbox.show { display: block; animation: fadeIn .4s ease both; }
+.linkbox-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
-.tip { font-size: 12px; color: #988b94; margin-top: 16px; }
+.linkbox-label { font-size: 12px; color: #9d8f99; }
+.linkbox-status { font-size: 12px; color: #7dcd9a; }
+.linkbox-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+.linkbox-input {
+  flex: 1;
+  min-height: 48px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(226,188,112,.22);
+  background: rgba(15,8,14,.6);
+  color: #c9bbc5;
+  font-family: monospace;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.linkbox-copy {
+  flex-shrink: 0;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(243, 211, 151, .42);
+  background: linear-gradient(110deg, #8e3552, #a75c63 52%, #c58a5d);
+  color: #fff9f5;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform .18s ease;
+}
+.linkbox-copy:active { transform: scale(.96); }
+.linkbox-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+.linkbox-actions .btn {
+  flex: 1;
+  min-height: 50px;
+  font-size: 15px;
+}
 
 /* 右上角历史记录入口 */
 .btn-history-icon {
@@ -408,7 +546,7 @@ textarea::placeholder { color: #9d8f99; }
   align-items: center;
   margin-bottom: 10px;
 }
-.invite-to { font-family: "ZCOOL XiaoWei", serif; font-size: 17px; color: #d9c8d1; }
+.invite-to { font-family: "Noto Sans SC", sans-serif; font-size: 17px; color: #d9c8d1; }
 .invite-status { font-size: 12px; }
 .invite-status.responded { color: #a8d8a8; }
 .invite-status.pending { color: #c8b89a; }
