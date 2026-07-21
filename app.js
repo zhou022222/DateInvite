@@ -160,23 +160,31 @@
 
     const pages = {
       1: () => `
-        <div class="hero hero--spread">
-          <div class="eyebrow">A moment for ${esc(config.to)}</div>
-          <h1 class="title">${esc(config.intro)}<br>准备了一个小 <span class="gold">Moment</span></h1>
-          <p class="subtitle">请收下这份约饭邀请</p>
-          <div class="art" aria-hidden="true"><div class="letter"></div><div class="envelope"></div><div class="seal"></div></div>
+        <div class="hero hero--cover">
+          <div class="hero-copy">
+            <div class="eyebrow">A moment for ${esc(config.to)}</div>
+            <h1 class="title">${esc(config.intro)}<br>准备了一个小 <span class="gold">Moment</span></h1>
+            <p class="subtitle">请收下这份约饭邀请</p>
+          </div>
+          <div class="invite-visual">
+            <div class="art art--premium" aria-hidden="true"><div class="letter"></div><div class="envelope"></div><div class="seal"></div></div>
+          </div>
           ${actions({action:'next', label:'轻触打开'})}
         </div>`,
       2: () => `
-        <div class="hero hero--spread">
-          <div class="eyebrow">A little something</div>
-          <h1 class="title">来自<br><span class="gold">${esc(config.from)}</span>。</h1>
-          <p class="subtitle">TA 想认真约你吃一顿好吃的。</p>
-          <div class="art" aria-hidden="true"><div class="letter"></div><div class="envelope"></div><div class="seal"></div></div>
+        <div class="hero hero--cover">
+          <div class="hero-copy">
+            <div class="eyebrow">A little something</div>
+            <h1 class="title">来自<br><span class="gold">${esc(config.from)}</span>。</h1>
+            <p class="subtitle">TA 想认真约你吃一顿好吃的。</p>
+          </div>
+          <div class="invite-visual">
+            <div class="art art--premium" aria-hidden="true"><div class="letter"></div><div class="envelope"></div><div class="seal"></div></div>
+          </div>
           ${actions({action:'next', label:'继续'})}
         </div>`,
       3: () => `
-        <div class="hero hero--raised">
+        <div class="hero hero--centered">
           <div class="heart-art" aria-hidden="true"></div>
           <h1 class="title">可以一起去<br>吃顿饭嘛<span class="gold">？！</span></h1>
           <p class="subtitle">系统检测到：对方已经紧张到开始反复刷新页面了。</p>
@@ -187,7 +195,7 @@
           </div>
         </div>`,
       4: () => `
-        <div class="hero">
+        <div class="hero hero--centered">
           <div class="heart-art" aria-hidden="true"></div>
           <h1 class="title">等下，<br>你真的点了<span class="gold">愿意</span>？？😭</h1>
           <p class="subtitle">我都已经准备好被你点"不要"了。</p>
@@ -197,7 +205,7 @@
       5: () => choicePage('我们吃点什么？', '挑一个今天的约会氛围', config.foods, 'food'),
       6: () => choicePage('想去哪里见面？', '选一个你喜欢的地方', config.places, 'place'),
       7: () => `
-        <div>
+        <div class="choice-page choice-page--time">
           <h1 class="section-title">什么时候最合适？</h1>
           <p class="section-subtitle">挑一个时间段吧。</p>
           ${ornament()}
@@ -214,7 +222,7 @@
           <div class="form-actions">${actions({action:'submit', label:'送出回应'})}</div>
         </div>`,
       8: () => `
-        <div>
+        <div class="done-page">
           <div class="heart-art" aria-hidden="true"></div>
           <p class="section-subtitle">回应已送出 ✨</p>
           <h1 class="section-title">这一刻，<br><span style="color:var(--gold)">值得被记住。</span></h1>
@@ -232,7 +240,7 @@
     };
 
     function choicePage(title, subtitle, items, key) {
-      return `<div><h1 class="section-title">${title}</h1><p class="section-subtitle">${subtitle}</p>${ornament()}<div class="choice-grid">${items.map(([icon, name]) => choiceCard(icon, name, key, name === '其他')).join('')}</div><div class="form-actions">${actions({action:'next-choice', label:'下一步'})}</div></div>`;
+      return `<div class="choice-page"><h1 class="section-title">${title}</h1><p class="section-subtitle">${subtitle}</p>${ornament()}<div class="choice-grid">${items.map(([icon, name]) => choiceCard(icon, name, key, name === '其他')).join('')}</div><div class="form-actions">${actions({action:'next-choice', label:'下一步'})}</div></div>`;
     }
     function choiceCard(icon, name, key, other = false) {
       const selected = state[key] === name ? ' selected' : '';

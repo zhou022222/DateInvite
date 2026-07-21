@@ -34,19 +34,18 @@ app.set('trust proxy', true);
 app.use(express.json());
 
 // ── 静态文件服务 ──
-// 使用 express.static 替代手动 Map，自动处理 favicon.ico、.css、.js 等
-app.use(express.static(path.join(__dirname), {
-  setHeaders(res, filePath) {
-    if (filePath.endsWith('.css')) res.setHeader('Content-Type', 'text/css');
-    if (filePath.endsWith('.js')) res.setHeader('Content-Type', 'application/javascript');
-    if (filePath.endsWith('.svg')) res.setHeader('Content-Type', 'image/svg+xml');
-  }
-}));
+// 只开放前端需要的文件，避免把 package.json、README、服务端文件等暴露到公网。
+const publicFiles = new Map([
+  ['/', 'index.html'],
+  ['/index.html', 'index.html'],
+  ['/create.html', 'create.html'],
+  ['/styles.css', 'styles.css'],
+  ['/app.js', 'app.js'],
+  ['/favicon.svg', 'favicon.svg']
+]);
 
-// 手动覆盖 index.html 路由（确保 / 和 /index.html 行为一致）
-app.get(['/', '/index.html', '/create.html'], (req, res) => {
-  const file = req.path === '/create.html' ? 'create.html' : 'index.html';
-  res.sendFile(path.join(__dirname, file));
+app.get([...publicFiles.keys()], (req, res) => {
+  res.sendFile(path.join(__dirname, publicFiles.get(req.path)));
 });
 
 app.get('/healthz', (_req, res) => {
