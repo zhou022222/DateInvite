@@ -1443,7 +1443,23 @@ body.recipient-mode .app .title .gold-word {
 }
 
 body.recipient-mode .app .hero--cover {
-  grid-template-rows: minmax(0, .86fr) minmax(0, .62fr) auto;
+  grid-template-rows: minmax(0, .62fr) minmax(0, .78fr) auto;
+  gap: clamp(14px, 2.4dvh, 26px);
+  padding-top: clamp(10px, 2dvh, 22px);
+}
+
+body.recipient-mode .app .hero-copy {
+  align-self: center;
+  transform: translateY(clamp(-18px, -2dvh, -8px));
+}
+
+body.recipient-mode .app .invite-visual {
+  align-self: center;
+  transform: translateY(clamp(-10px, -1.2dvh, -4px));
+}
+
+body.recipient-mode .app .hero--cover .actions {
+  padding-bottom: max(clamp(16px, 2.8dvh, 28px), env(safe-area-inset-bottom));
 }
 
 @media (max-height: 740px) {
@@ -1517,6 +1533,20 @@ body.recipient-mode .app .hero--cover {
   body.recipient-mode .app .art--premium {
     width: min(64cqw, 238px);
     height: min(22dvh, 158px);
+  }
+
+  body.recipient-mode .app .hero--cover {
+    grid-template-rows: minmax(0, .58fr) minmax(0, .76fr) auto;
+    gap: clamp(10px, 1.8dvh, 18px);
+    padding-top: 6px;
+  }
+
+  body.recipient-mode .app .hero-copy {
+    transform: translateY(-6px);
+  }
+
+  body.recipient-mode .app .hero--cover .actions {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
   }
 }
 
