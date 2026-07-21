@@ -162,7 +162,7 @@
       return `<div class="actions">${secondary ? `<button type="button" class="btn btn-secondary" data-action="${secondary.action}">${secondary.label}</button>` : ''}<button type="button" class="btn btn-primary" data-action="${primary.action}">${primary.label}<span class="arrow">→</span></button></div>`;
     }
     function coverTitleHtml() {
-      return `<span class="title-line">${esc(config.intro)}</span><span class="title-line">准备了一个小 <span class="gold gold-word">Moment</span></span>`;
+      return `<span class="title-line">${esc(config.to)}，${esc(config.intro)}</span><span class="title-line">准备了一个小 <span class="gold gold-word">Moment</span></span>`;
     }
     function coverTitleClass() {
       return Array.from(String(config.intro || '')).length > 10 ? ' title--compact' : '';
@@ -203,7 +203,7 @@
       3: () => `
         <div class="hero hero--centered">
           <div class="heart-art" aria-hidden="true"></div>
-          <h1 class="title">可以一起去<br>吃顿饭嘛<span class="gold">？！</span></h1>
+          <h1 class="title">${esc(config.to)}，可以一起去<br>吃顿饭嘛<span class="gold">？！</span></h1>
           <p class="subtitle">系统检测到：对方已经紧张到开始反复刷新页面了。</p>
           ${ornament()}
           <div class="actions">
@@ -532,10 +532,6 @@
         <div class="detail-section">
           <p class="detail-label">想吃</p>
           <p class="detail-value">${escHtml(inv.food || '未选择')}</p>
-        </div>
-        <div class="detail-section">
-          <p class="detail-label">饭后小酌</p>
-          <p class="detail-value">${escHtml(inv.drink || '未选择')}</p>
         </div>
         <div class="detail-section">
           <p class="detail-label">见面地点</p>
