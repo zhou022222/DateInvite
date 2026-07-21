@@ -176,7 +176,7 @@
           ${actions({action:'next', label:'继续'})}
         </div>`,
       3: () => `
-        <div class="hero">
+        <div class="hero hero--raised">
           <div class="heart-art" aria-hidden="true"></div>
           <h1 class="title">可以一起去<br>吃顿饭嘛<span class="gold">？！</span></h1>
           <p class="subtitle">系统检测到：对方已经紧张到开始反复刷新页面了。</p>
