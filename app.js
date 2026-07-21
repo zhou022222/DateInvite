@@ -161,18 +161,107 @@
     const pages = {
       1: () => `
         <div class="hero hero--spread">
-          <div class="eyebrow">A moment for ${esc(config.to)}</div>
-          <h1 class="title">${esc(config.intro)}<br>准备了一个小 <span class="gold">Moment</span></h1>
+          <div class="eyebrow">A MOMENT FOR ${esc(config.to)}</div>
+          <div class="title-wrap">
+            <h1 class="title">${esc(config.intro)}</h1>
+            <h1 class="title title--second">准备了一个<span class="gold">Moment</span></h1>
+          </div>
           <p class="subtitle">请收下这份约饭邀请</p>
-          <div class="art" aria-hidden="true"><div class="letter"></div><div class="envelope"></div><div class="seal"></div></div>
+          <div class="art" aria-hidden="true">
+            <svg class="envelope-svg" viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="envGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#5a1a32"/>
+                  <stop offset="50%" stop-color="#2d0f1a"/>
+                  <stop offset="100%" stop-color="#1a0810"/>
+                </linearGradient>
+                <linearGradient id="flapGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#7a2442"/>
+                  <stop offset="100%" stop-color="#3a1120"/>
+                </linearGradient>
+                <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#f9e5b8"/>
+                  <stop offset="50%" stop-color="#d4a04f"/>
+                  <stop offset="100%" stop-color="#9f6b2e"/>
+                </linearGradient>
+                <filter id="envShadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity="0.55"/>
+                </filter>
+              </defs>
+              <!-- 信封主体 -->
+              <rect x="20" y="46" width="200" height="118" rx="10" fill="url(#envGrad)" filter="url(#envShadow)" stroke="rgba(230,189,110,0.45)" stroke-width="1.2"/>
+              <!-- 上盖 -->
+              <path d="M20 46 L120 125 L220 46" fill="url(#flapGrad)" stroke="rgba(230,189,110,0.38)" stroke-width="1"/>
+              <!-- 侧翼折痕 -->
+              <path d="M20 46 L120 125 L20 164" fill="none" stroke="rgba(230,189,110,0.18)" stroke-width="1"/>
+              <path d="M220 46 L120 125 L220 164" fill="none" stroke="rgba(230,189,110,0.18)" stroke-width="1"/>
+              <!-- 底部 -->
+              <path d="M20 164 L120 110 L220 164" fill="#251018" stroke="rgba(230,189,110,0.22)" stroke-width="1"/>
+              <!-- 金色丝带 -->
+              <path d="M120 90 Q90 140 50 160" fill="none" stroke="url(#goldGrad)" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M120 90 Q150 140 190 160" fill="none" stroke="url(#goldGrad)" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- 封蜡 -->
+              <circle cx="120" cy="118" r="22" fill="url(#envGrad)" stroke="url(#goldGrad)" stroke-width="2.5"/>
+              <circle cx="120" cy="118" r="14" fill="none" stroke="url(#goldGrad)" stroke-width="1.2"/>
+              <text x="120" y="124" text-anchor="middle" font-size="18" fill="#f9e5b8">♡</text>
+              <!-- 玫瑰花 -->
+              <g transform="translate(175, 135)">
+                <circle r="10" fill="#7a1f2e"/>
+                <circle r="7" fill="#9e2b3d"/>
+                <circle r="4" fill="#c43a4f"/>
+              </g>
+            </svg>
+          </div>
           ${actions({action:'next', label:'轻触打开'})}
         </div>`,
       2: () => `
         <div class="hero hero--spread">
-          <div class="eyebrow">A little something</div>
-          <h1 class="title">来自<br><span class="gold">${esc(config.from)}</span>。</h1>
+          <div class="eyebrow">A LITTLE SOMETHING</div>
+          <div class="title-wrap">
+            <h1 class="title">来自一个</h1>
+            <h1 class="title title--second"><span class="gold">${esc(config.from)}</span>。</h1>
+          </div>
           <p class="subtitle">TA 想认真约你吃一顿好吃的。</p>
-          <div class="art" aria-hidden="true"><div class="letter"></div><div class="envelope"></div><div class="seal"></div></div>
+          <div class="art" aria-hidden="true">
+            <svg class="envelope-svg envelope-svg--open" viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="paperGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#fff8e7"/>
+                  <stop offset="100%" stop-color="#ead0a6"/>
+                </linearGradient>
+                <linearGradient id="envOpenGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#5a1a32"/>
+                  <stop offset="100%" stop-color="#1a0810"/>
+                </linearGradient>
+                <linearGradient id="goldGradOpen" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#f9e5b8"/>
+                  <stop offset="50%" stop-color="#d4a04f"/>
+                  <stop offset="100%" stop-color="#9f6b2e"/>
+                </linearGradient>
+                <filter id="openShadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity="0.55"/>
+                </filter>
+              </defs>
+              <!-- 后信封 -->
+              <rect x="20" y="54" width="200" height="110" rx="10" fill="url(#envOpenGrad)" filter="url(#openShadow)" stroke="rgba(230,189,110,0.4)" stroke-width="1.2"/>
+              <!-- 信纸 -->
+              <rect x="48" y="26" width="144" height="104" rx="4" fill="url(#paperGrad)" stroke="#dcc096" stroke-width="1"/>
+              <line x1="68" y1="58" x2="172" y2="58" stroke="#bfa37d" stroke-width="1" opacity="0.5"/>
+              <line x1="68" y1="78" x2="172" y2="78" stroke="#bfa37d" stroke-width="1" opacity="0.5"/>
+              <line x1="68" y1="98" x2="140" y2="98" stroke="#bfa37d" stroke-width="1" opacity="0.5"/>
+              <!-- 前盖 -->
+              <path d="M20 54 L120 130 L220 54" fill="url(#envOpenGrad)" stroke="rgba(230,189,110,0.35)" stroke-width="1" opacity="0.92"/>
+              <!-- 金色丝带 -->
+              <path d="M120 100 Q80 150 40 165" fill="none" stroke="url(#goldGradOpen)" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M120 100 Q160 150 200 165" fill="none" stroke="url(#goldGradOpen)" stroke-width="2.2" stroke-linecap="round"/>
+              <!-- 玫瑰花 -->
+              <g transform="translate(180, 145)">
+                <circle r="9" fill="#7a1f2e"/>
+                <circle r="6.5" fill="#9e2b3d"/>
+                <circle r="3.5" fill="#c43a4f"/>
+              </g>
+            </svg>
+          </div>
           ${actions({action:'next', label:'继续'})}
         </div>`,
       3: () => `
