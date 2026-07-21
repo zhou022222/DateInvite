@@ -16,15 +16,33 @@
 
 * { box-sizing: border-box; }
 html, body { margin: 0; min-height: 100%; background: #0d090d; color: var(--ink); }
-body { overflow: hidden; }
+body {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a070a;
+}
 button, input, textarea { font: inherit; }
 button { -webkit-tap-highlight-color: transparent; }
 
+.phone {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  background: #0d090d;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  scrollbar-width: none;
+}
+.phone::-webkit-scrollbar { display: none; }
+
 .app {
   position: relative;
-  width: min(100vw, 520px);
+  width: 100%;
   min-height: 100svh;
-  margin: 0 auto;
   overflow: hidden;
   isolation: isolate;
   background:
@@ -238,12 +256,27 @@ textarea::placeholder { color: #9d8f99; }
   .choice-icon { font-size: 29px; }
 }
 
+@media (min-width: 480px) {
+  .phone {
+    width: 430px;
+    min-height: 94vh;
+    max-height: 96vh;
+    border-radius: 48px;
+    border: 12px solid #151015;
+    box-shadow:
+      0 30px 90px rgba(0,0,0,.55),
+      0 0 0 1px rgba(255,255,255,.06),
+      inset 0 0 0 1px rgba(255,255,255,.04);
+  }
+}
+
 /* ═════════════════════════════════════
    创作者模式
    ═════════════════════════════════════ */
-.mode-creator { overflow: visible; min-height: 100svh; height: auto; background: #0d090d; }
+.mode-creator { overflow: visible; width: 100%; min-height: 100svh; height: auto; background: #0d090d; }
 .creator {
-  width: min(100%, 760px);
+  width: 100%;
+  max-width: 100%;
   min-height: 100svh;
   margin: auto;
   padding: 42px 20px 70px;
