@@ -157,13 +157,23 @@
     function actions(primary, secondary = '') {
       return `<div class="actions">${secondary ? `<button type="button" class="btn btn-secondary" data-action="${secondary.action}">${secondary.label}</button>` : ''}<button type="button" class="btn btn-primary" data-action="${primary.action}">${primary.label}<span class="arrow">→</span></button></div>`;
     }
+    function coverTitleHtml() {
+      return `<span class="title-line">${esc(config.intro)}</span><span class="title-line">准备了一个小 <span class="gold gold-word">Moment</span></span>`;
+    }
+    function fromTitleHtml() {
+      const from = String(config.from || '').trim() || '一个很在意你的人';
+      if (from.startsWith('一个') && from.length > 2) {
+        return `<span class="title-line">来自一个</span><span class="title-line"><span class="gold gold-name">${esc(from.slice(2))}</span>。</span>`;
+      }
+      return `<span class="title-line">来自</span><span class="title-line"><span class="gold gold-name">${esc(from)}</span>。</span>`;
+    }
 
     const pages = {
       1: () => `
         <div class="hero hero--cover">
           <div class="hero-copy">
             <div class="eyebrow">A moment for ${esc(config.to)}</div>
-            <h1 class="title">${esc(config.intro)}<br>准备了一个小 <span class="gold">Moment</span></h1>
+            <h1 class="title title--cover">${coverTitleHtml()}</h1>
             <p class="subtitle">请收下这份约饭邀请</p>
           </div>
           <div class="invite-visual">
@@ -175,7 +185,7 @@
         <div class="hero hero--cover">
           <div class="hero-copy">
             <div class="eyebrow">A little something</div>
-            <h1 class="title">来自<br><span class="gold">${esc(config.from)}</span>。</h1>
+            <h1 class="title title--cover">${fromTitleHtml()}</h1>
             <p class="subtitle">TA 想认真约你吃一顿好吃的。</p>
           </div>
           <div class="invite-visual">

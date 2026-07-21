@@ -663,7 +663,7 @@ textarea::placeholder { color: #9d8f99; }
 }
 
 .app .screen {
-  padding: calc(78px + env(safe-area-inset-top)) 32px calc(24px + env(safe-area-inset-bottom));
+  padding: calc(78px + env(safe-area-inset-top)) 34px calc(24px + env(safe-area-inset-bottom));
 }
 
 .app .hero {
@@ -675,30 +675,30 @@ textarea::placeholder { color: #9d8f99; }
 .app .hero--cover {
   min-height: calc(100svh - 102px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   display: grid;
-  grid-template-rows: minmax(245px, .95fr) minmax(240px, .78fr) auto;
+  grid-template-rows: minmax(250px, .94fr) minmax(220px, .72fr) auto;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .app .hero-copy {
   align-self: end;
-  padding-top: 4svh;
+  padding-top: 3svh;
 }
 
 .app .eyebrow {
-  margin: 0 0 20px;
+  margin: 0 0 18px;
   color: rgba(230, 189, 110, .88);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: .42em;
+  letter-spacing: .4em;
 }
 
 .app .title {
   font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
-  font-size: clamp(38px, 10.8vw, 56px);
-  line-height: 1.32;
+  font-size: clamp(30px, 8.4vw, 42px);
+  line-height: 1.42;
   font-weight: 300;
-  letter-spacing: .04em;
+  letter-spacing: .035em;
   color: #fffaf6;
   text-wrap: balance;
   text-shadow:
@@ -706,19 +706,40 @@ textarea::placeholder { color: #9d8f99; }
     0 18px 42px rgba(0,0,0,.42);
 }
 
+.app .title--cover {
+  font-size: clamp(28px, 7.4vw, 38px);
+  line-height: 1.48;
+  letter-spacing: .03em;
+}
+
+.app .title-line {
+  display: block;
+  white-space: nowrap;
+}
+
 .app .title .gold {
   color: #e9c46e;
-  font-family: Georgia, "Times New Roman", serif;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: .02em;
   text-shadow: 0 10px 28px rgba(233,196,110,.2);
 }
 
+.app .title .gold-word {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  font-size: 1.06em;
+}
+
+.app .title .gold-name {
+  font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+  font-weight: 400;
+}
+
 .app .subtitle {
   max-width: 330px;
-  margin-top: 22px;
+  margin-top: 18px;
   color: rgba(255, 244, 238, .72);
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.7;
   letter-spacing: .08em;
 }
@@ -732,18 +753,18 @@ textarea::placeholder { color: #9d8f99; }
 }
 
 .app .art--premium {
-  width: min(84vw, 340px);
-  height: 252px;
+  width: min(78vw, 318px);
+  height: 232px;
   margin: 0 auto;
   transform: rotate(-2deg);
   filter: drop-shadow(0 26px 34px rgba(0,0,0,.48));
 }
 
 .app .art--premium .letter {
-  width: 205px;
-  height: 126px;
-  left: 58px;
-  top: 28px;
+  width: 192px;
+  height: 118px;
+  left: 54px;
+  top: 26px;
   border-radius: 7px 7px 2px 2px;
   transform: rotate(-1deg);
   background:
@@ -755,10 +776,10 @@ textarea::placeholder { color: #9d8f99; }
 }
 
 .app .art--premium .envelope {
-  width: 282px;
-  height: 168px;
-  left: 26px;
-  bottom: 18px;
+  width: 264px;
+  height: 158px;
+  left: 24px;
+  bottom: 17px;
   border-radius: 12px 12px 18px 18px;
   transform: rotate(-4deg);
   background:
@@ -784,11 +805,11 @@ textarea::placeholder { color: #9d8f99; }
 }
 
 .app .art--premium .seal {
-  width: 68px;
-  height: 68px;
-  left: 132px;
+  width: 62px;
+  height: 62px;
+  left: 124px;
   bottom: 0;
-  font-size: 30px;
+  font-size: 28px;
   border: 3px solid rgba(235, 181, 94, .7);
   background:
     radial-gradient(circle at 38% 30%, #ef6b68 0 12%, #ad2337 48%, #5f0e24 100%);
@@ -799,7 +820,7 @@ textarea::placeholder { color: #9d8f99; }
 
 .app .hero--cover .actions {
   align-self: end;
-  width: min(100%, 350px);
+  width: min(100%, 340px);
   margin: 0 auto;
   padding-bottom: max(4px, env(safe-area-inset-bottom));
 }
@@ -825,7 +846,7 @@ textarea::placeholder { color: #9d8f99; }
     0 20px 42px rgba(72, 17, 43, .46),
     inset 0 1px rgba(255,255,255,.25),
     inset 0 -2px rgba(66,22,32,.2);
-  font-size: 18px;
+  font-size: 16px;
   letter-spacing: .16em;
 }
 
@@ -971,16 +992,17 @@ textarea::placeholder { color: #9d8f99; }
   .app .topbar { padding-left: 22px; padding-right: 22px; }
   .app .screen { padding-left: 24px; padding-right: 24px; }
   .app .hero--cover {
-    grid-template-rows: minmax(214px, .82fr) minmax(196px, .68fr) auto;
+    grid-template-rows: minmax(214px, .82fr) minmax(190px, .64fr) auto;
   }
-  .app .title { font-size: clamp(32px, 9.6vw, 42px); }
-  .app .subtitle { margin-top: 16px; font-size: 14px; }
+  .app .title { font-size: clamp(28px, 8.2vw, 36px); }
+  .app .title--cover { font-size: clamp(25px, 7vw, 32px); }
+  .app .subtitle { margin-top: 14px; font-size: 13px; }
   .app .art--premium {
-    width: min(84vw, 300px);
-    height: 210px;
+    width: min(78vw, 286px);
+    height: 198px;
     transform: scale(.92) rotate(-2deg);
   }
-  .app .hero--cover .actions { width: min(100%, 330px); }
-  .app .btn-primary { min-height: 56px; font-size: 16px; }
+  .app .hero--cover .actions { width: min(100%, 318px); }
+  .app .btn-primary { min-height: 54px; font-size: 15px; }
   .app .choice-card { min-height: 100px; }
 }
