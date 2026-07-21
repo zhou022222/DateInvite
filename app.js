@@ -481,14 +481,81 @@
       document.getElementById('historyMode').style.display = 'none';
       document.getElementById('creatorMode').style.display = '';
     });
+
+    // 详情页返回按钮
+    $('detailBackBtn')?.addEventListener('click', () => {
+      document.getElementById('historyDetail').style.display = 'none';
+      document.getElementById('historyHeader').style.display = '';
+      document.getElementById('invitationList').style.display = '';
+    });
   }
 
   // ── 显示历史记录页 ──
   async function showHistoryMode(creatorId) {
     document.getElementById('creatorMode').style.display = 'none';
     document.getElementById('historyMode').style.display = '';
+    document.getElementById('historyDetail').style.display = 'none';
+    document.getElementById('historyHeader').style.display = '';
+    document.getElementById('invitationList').style.display = '';
 
     await loadInvitations(creatorId);
+  }
+
+  // ── 显示邀请详情 ──
+  function showInvitationDetail(inv) {
+    const hasResponse = inv.status === 'responded';
+    const detailEl = document.getElementById('historyDetail');
+    const contentEl = document.getElementById('detailContent');
+    const titleEl = detailEl.querySelector('h1');
+
+    titleEl.textContent = `给 ${escHtml(inv.to_name || '你')} 的邀请`;
+
+    if (!hasResponse) {
+      contentEl.innerHTML = `
+        <div class="detail-empty">
+          <p>对方还没有回应</p>
+          <div class="invite-link-row" style="margin-top:18px">
+            <span class="invite-link-text">${escHtml(`${location.origin}/index.html?id=${inv.id}`)}</span>
+            <button class="btn-copy-sm" id="detailCopyLink">复制</button>
+          </div>
+        </div>
+      `;
+      document.getElementById('detailCopyLink')?.addEventListener('click', () => {
+        navigator.clipboard.writeText(`${location.origin}/index.html?id=${inv.id}`);
+        const btn = document.getElementById('detailCopyLink');
+        btn.textContent = '✓';
+        setTimeout(() => { btn.textContent = '复制'; }, 1500);
+      });
+    } else {
+      const message = (inv.response_message || '').trim();
+      contentEl.innerHTML = `
+        <div class="detail-section">
+          <p class="detail-label">想吃</p>
+          <p class="detail-value">${escHtml(inv.food || '未选择')}</p>
+        </div>
+        <div class="detail-section">
+          <p class="detail-label">饭后小酌</p>
+          <p class="detail-value">${escHtml(inv.drink || '未选择')}</p>
+        </div>
+        <div class="detail-section">
+          <p class="detail-label">见面地点</p>
+          <p class="detail-value">${escHtml(inv.place || '未选择')}</p>
+        </div>
+        <div class="detail-section">
+          <p class="detail-label">约定时间</p>
+          <p class="detail-value">${escHtml(inv.time || '未选择')}</p>
+        </div>
+        <div class="detail-section">
+          <p class="detail-label">TA 说了什么</p>
+          <p class="detail-value detail-message">${message ? escHtml(message) : '对方没有更多想说的～'}</p>
+        </div>
+        <div class="detail-time">回应于 ${inv.responded_at ? inv.responded_at.slice(0, 10) : ''}</div>
+      `;
+    }
+
+    document.getElementById('historyHeader').style.display = 'none';
+    document.getElementById('invitationList').style.display = 'none';
+    detailEl.style.display = '';
   }
 
   // ── 加载邀请列表 ──
@@ -514,7 +581,7 @@
         const hasResponse = inv.status === 'responded';
         const timeStr = inv.responded_at ? inv.responded_at.slice(0, 10) : '';
         return `
-          <div class="invite-card">
+          <div class="invite-card" data-invite-id="${escHtml(inv.id)}" role="button" tabindex="0">
             <div class="invite-card-header">
               <span class="invite-to">💌 给 ${escHtml(inv.to_name)}</span>
               <span class="invite-status ${hasResponse ? 'responded' : 'pending'}">
@@ -526,7 +593,6 @@
                 <span>🍽️ ${escHtml(inv.food)}</span>
                 <span>📍 ${escHtml(inv.place)}</span>
                 <span>🕐 ${escHtml(inv.time)}</span>
-                ${inv.response_message ? `<span>💬 ${escHtml(inv.response_message)}</span>` : ''}
               </div>
               <div class="invite-time">${timeStr}</div>
             ` : `
@@ -540,12 +606,22 @@
         `;
       }).join('')}`;
 
-      // 绑定复制按钮
+      // 绑定复制按钮（阻止冒泡）
       container.querySelectorAll('.btn-copy-sm').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
           navigator.clipboard.writeText(btn.dataset.link);
           btn.textContent = '✓';
           setTimeout(() => { btn.textContent = '复制'; }, 1500);
+        });
+      });
+
+      // 绑定卡片点击
+      container.querySelectorAll('.invite-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const id = card.dataset.inviteId;
+          const inv = list.find(item => String(item.id) === id);
+          if (inv) showInvitationDetail(inv);
         });
       });
     } catch (err) {

@@ -78,7 +78,7 @@
     <!-- ===== 历史记录模式 ===== -->
     <div id="historyMode" class="mode-creator" style="display:none">
       <main class="creator">
-        <div class="creator-header creator-header--back">
+        <div class="creator-header creator-header--back" id="historyHeader">
           <button class="btn-back-nav" id="backBtn" type="button">← 返回</button>
           <h1>历史记录</h1>
         </div>
@@ -87,6 +87,15 @@
             <p class="tip" style="text-align:center;padding:30px 0">还没有邀请，创建一个吧 ✨</p>
           </div>
         </section>
+
+        <!-- 邀请详情视图 -->
+        <div id="historyDetail" style="display:none">
+          <div class="creator-header creator-header--back">
+            <button class="btn-back-nav" id="detailBackBtn" type="button">← 返回</button>
+            <h1>邀请详情</h1>
+          </div>
+          <section class="panel detail-panel" id="detailContent"></section>
+        </div>
       </main>
     </div>
 
