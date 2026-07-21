@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#1b0e18" />
+  <meta name="description" content="一份可分享、可参与、可回应的约会邀请。" />
+  <title>Moment - 约会邀请</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <!-- ===== 创作者模式 ===== -->
+  <div id="creatorMode" class="mode-creator" style="display:none">
+    <main class="creator">
+      <div class="eyebrow">Create your moment</div>
+      <h1>创建一份约会邀请</h1>
+      <p>填写下面几项，生成一个可分享链接。对方打开后可以选择吃什么、去哪里、什么时候见面，回应会自动保存回来。</p>
+
+      <section class="panel" id="createForm">
+        <div class="field">
+          <label for="cr_to">怎么称呼对方</label>
+          <input id="cr_to" maxlength="20" value="你" />
+        </div>
+        <div class="field">
+          <label for="cr_from">怎么称呼你</label>
+          <input id="cr_from" maxlength="30" value="一个很在意你的人" />
+        </div>
+        <div class="field">
+          <label for="cr_intro">首页邀请文案</label>
+          <input id="cr_intro" maxlength="30" value="想约你吃顿好吃的" />
+        </div>
+        <div class="field">
+          <label for="cr_note">补充一句话</label>
+          <textarea id="cr_note" maxlength="80">我认真准备了这份约饭邀请。</textarea>
+        </div>
+        <div class="creator-actions">
+          <button class="btn btn-primary" id="generateBtn" type="button">✨ 生成邀请链接</button>
+        </div>
+        <div id="linkbox" class="linkbox"></div>
+      </section>
+
+      <!-- 已发出的邀请 -->
+      <section id="invitationList" class="panel" style="margin-top:32px;">
+        <h2 style="font-size:18px;font-weight:400;font-family:'ZCOOL XiaoWei',serif;color:#d9c8d1;margin:0 0 16px">📬 已发出的邀请</h2>
+        <div id="invitationItems">
+          <p class="tip" style="text-align:center;padding:30px 0">还没有邀请，创建一个吧 ✨</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===== 受邀模式（8 屏流程） ===== -->
+  <main id="app" class="app" aria-live="polite" style="display:none">
+    <div class="ambient" aria-hidden="true">
+      <span class="glow glow-a"></span>
+      <span class="glow glow-b"></span>
+      <span class="petal p1">❧</span>
+      <span class="petal p2">❧</span>
+      <span class="petal p3">❧</span>
+      <span class="petal p4">❧</span>
+      <span class="petal p5">❧</span>
+      <span class="petal p6">❧</span>
+    </div>
+
+    <header class="topbar">
+      <button class="brand" id="restartBtn" type="button" aria-label="重新开始">
+        <span class="brand-mark">M</span>
+        <span class="brand-text">Moment</span>
+      </button>
+      <div class="progress-wrap">
+        <div id="stepLabel" class="step-label">1 / 8</div>
+        <div class="progress"><span id="progressBar"></span></div>
+      </div>
+    </header>
+
+    <section id="screen" class="screen"></section>
+  </main>
+
+  <template id="ornamentTemplate">
+    <div class="ornament" aria-hidden="true"><span></span><b>✦</b><span></span></div>
+  </template>
+
+  <script src="./app.js"></script>
+</body>
+</html>
