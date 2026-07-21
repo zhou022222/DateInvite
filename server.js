@@ -33,22 +33,27 @@ const app = express();
 app.set('trust proxy', true);
 app.use(express.json());
 
-const publicFiles = new Map([
-  ['/', 'index.html'],
-  ['/index.html', 'index.html'],
-  ['/create.html', 'create.html'],
-  ['/styles.css', 'styles.css'],
-  ['/app.js', 'app.js']
-]);
+// ── 静态文件服务 ──
+// 使用 express.static 替代手动 Map，自动处理 favicon.ico、.css、.js 等
+app.use(express.static(path.join(__dirname), {
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('.css')) res.setHeader('Content-Type', 'text/css');
+    if (filePath.endsWith('.js')) res.setHeader('Content-Type', 'application/javascript');
+    if (filePath.endsWith('.svg')) res.setHeader('Content-Type', 'image/svg+xml');
+  }
+}));
 
-app.get([...publicFiles.keys()], (req, res) => {
-  res.sendFile(path.join(__dirname, publicFiles.get(req.path)));
+// 手动覆盖 index.html 路由（确保 / 和 /index.html 行为一致）
+app.get(['/', '/index.html', '/create.html'], (req, res) => {
+  const file = req.path === '/create.html' ? 'create.html' : 'index.html';
+  res.sendFile(path.join(__dirname, file));
 });
 
 app.get('/healthz', (_req, res) => {
   res.json({ ok: true });
 });
 
+// ── API 错误处理 ──
 function toClientError(error) {
   if (!error) return '请求失败';
   if (error.code === '23505') return '已经回应过了';
@@ -90,13 +95,17 @@ app.get('/api/invitations', async (req, res) => {
   const { creator_id } = req.query;
   if (!creator_id) return res.status(400).json({ error: '缺少 creator_id' });
 
-  const { data: invitations, error } = await supabase
-    .from('invitations')
-    .select('*')
-    .eq('creator_id', creator_id)
-    .order('created_at', { ascending: false });
+  let invitations;
+  try {
+    const { data, error } = await supabase
+      .from('invitations')
+      .select('*')
+      .eq('creator_id', creator_id)
+      .order('created_at', { ascending: false });
 
-  if (error) {
+    if (error) throw error;
+    invitations = data;
+  } catch (error) {
     console.error('list invitations failed:', error);
     return res.status(500).json({ error: toClientError(error) });
   }
@@ -105,17 +114,18 @@ app.get('/api/invitations', async (req, res) => {
   let responsesByInviteId = new Map();
 
   if (ids.length) {
-    const { data: responses, error: responsesError } = await supabase
-      .from('responses')
-      .select('*')
-      .in('invitation_id', ids);
+    try {
+      const { data: responses, error: responsesError } = await supabase
+        .from('responses')
+        .select('*')
+        .in('invitation_id', ids);
 
-    if (responsesError) {
-      console.error('list responses failed:', responsesError);
-      return res.status(500).json({ error: toClientError(responsesError) });
+      if (responsesError) throw responsesError;
+      responsesByInviteId = new Map(responses.map(row => [row.invitation_id, row]));
+    } catch (error) {
+      console.error('list responses failed:', error);
+      return res.status(500).json({ error: toClientError(error) });
     }
-
-    responsesByInviteId = new Map(responses.map(row => [row.invitation_id, row]));
   }
 
   const rows = invitations.map(inv => {
@@ -136,19 +146,20 @@ app.get('/api/invitations', async (req, res) => {
 
 // API: 获取单个邀请
 app.get('/api/invitations/:id', async (req, res) => {
-  const { data: inv, error } = await supabase
-    .from('invitations')
-    .select('*')
-    .eq('id', req.params.id)
-    .maybeSingle();
+  try {
+    const { data: inv, error } = await supabase
+      .from('invitations')
+      .select('*')
+      .eq('id', req.params.id)
+      .maybeSingle();
 
-  if (error) {
+    if (error) throw error;
+    if (!inv) return res.status(404).json({ error: '邀请不存在' });
+    res.json(inv);
+  } catch (error) {
     console.error('get invitation failed:', error);
     return res.status(500).json({ error: toClientError(error) });
   }
-  if (!inv) return res.status(404).json({ error: '邀请不存在' });
-
-  res.json(inv);
 });
 
 // API: 提交回应
@@ -156,74 +167,81 @@ app.post('/api/responses', async (req, res) => {
   const { invitation_id, food, place, time, message, reply } = req.body;
   if (!invitation_id) return res.status(400).json({ error: '缺少邀请 ID' });
 
-  const { data: inv, error: invitationError } = await supabase
-    .from('invitations')
-    .select('id')
-    .eq('id', invitation_id)
-    .maybeSingle();
+  try {
+    const { data: inv, error: invitationError } = await supabase
+      .from('invitations')
+      .select('id')
+      .eq('id', invitation_id)
+      .maybeSingle();
 
-  if (invitationError) {
-    console.error('check invitation failed:', invitationError);
-    return res.status(500).json({ error: toClientError(invitationError) });
+    if (invitationError) throw invitationError;
+    if (!inv) return res.status(404).json({ error: '邀请不存在' });
+
+    const { data: existing, error: existingError } = await supabase
+      .from('responses')
+      .select('id')
+      .eq('invitation_id', invitation_id)
+      .maybeSingle();
+
+    if (existingError) throw existingError;
+    if (existing) return res.status(400).json({ error: '已经回应过了' });
+
+    const { error: insertError } = await supabase
+      .from('responses')
+      .insert({
+        invitation_id,
+        food: food || '',
+        place: place || '',
+        time: time || '',
+        message: message || '',
+        reply: reply || 'accept'
+      });
+
+    if (insertError) {
+      const status = insertError.code === '23505' ? 400 : 500;
+      return res.status(status).json({ error: toClientError(insertError) });
+    }
+
+    const { error: updateError } = await supabase
+      .from('invitations')
+      .update({ status: 'responded' })
+      .eq('id', invitation_id);
+
+    if (updateError) {
+      console.error('update invitation status failed:', updateError);
+      return res.status(500).json({ error: toClientError(updateError) });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('response submission failed:', error);
+    return res.status(500).json({ error: toClientError(error) });
   }
-  if (!inv) return res.status(404).json({ error: '邀请不存在' });
-
-  const { data: existing, error: existingError } = await supabase
-    .from('responses')
-    .select('id')
-    .eq('invitation_id', invitation_id)
-    .maybeSingle();
-
-  if (existingError) {
-    console.error('check response failed:', existingError);
-    return res.status(500).json({ error: toClientError(existingError) });
-  }
-  if (existing) return res.status(400).json({ error: '已经回应过了' });
-
-  const { error: insertError } = await supabase
-    .from('responses')
-    .insert({
-      invitation_id,
-      food: food || '',
-      place: place || '',
-      time: time || '',
-      message: message || '',
-      reply: reply || 'accept'
-    });
-
-  if (insertError) {
-    console.error('create response failed:', insertError);
-    const status = insertError.code === '23505' ? 400 : 500;
-    return res.status(status).json({ error: toClientError(insertError) });
-  }
-
-  const { error: updateError } = await supabase
-    .from('invitations')
-    .update({ status: 'responded' })
-    .eq('id', invitation_id);
-
-  if (updateError) {
-    console.error('update invitation status failed:', updateError);
-    return res.status(500).json({ error: toClientError(updateError) });
-  }
-
-  res.json({ success: true });
 });
 
 // API: 获取回应
 app.get('/api/responses/:invitationId', async (req, res) => {
-  const { data: resp, error } = await supabase
-    .from('responses')
-    .select('*')
-    .eq('invitation_id', req.params.invitationId)
-    .maybeSingle();
+  try {
+    const { data: resp, error } = await supabase
+      .from('responses')
+      .select('*')
+      .eq('invitation_id', req.params.invitationId)
+      .maybeSingle();
 
-  if (error) {
+    if (error) throw error;
+    res.json(resp || null);
+  } catch (error) {
     console.error('get response failed:', error);
     return res.status(500).json({ error: toClientError(error) });
   }
+});
 
-  res.json(resp || null);
+// ── 404 兜底 ──
+app.use((req, res) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: '接口不存在' });
+  }
+  res.status(404).sendFile(path.join(__dirname, 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000;

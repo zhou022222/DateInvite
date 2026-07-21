@@ -4,6 +4,71 @@
   // ── 配置 ──
   const API_BASE = '';
   const LS_CREATOR_KEY = 'moment_creator_id';
+  const FETCH_TIMEOUT = 15000; // 15 秒超时（给 Render 冷启动留足时间）
+
+  // ── 带超时的 fetch ──
+  async function fetchWithTimeout(url, options = {}) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+    try {
+      const resp = await fetch(url, {
+        ...options,
+        signal: controller.signal
+      });
+      return resp;
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  // ── Toast ──
+  let toastTimer;
+  function toast(text) {
+    let node = document.querySelector('.toast');
+    if (!node) {
+      node = document.createElement('div');
+      node.className = 'toast';
+      document.body.appendChild(node);
+    }
+    node.textContent = text;
+    requestAnimationFrame(() => node.classList.add('show'));
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => node.classList.remove('show'), 1800);
+  }
+
+  // ── Loading 遮罩 ──
+  function showLoading(container, message = '正在加载…') {
+    const overlay = document.createElement('div');
+    overlay.className = 'loading-overlay';
+    overlay.innerHTML = `<div class="loading-spinner"></div><p class="loading-text">${message}</p><p class="loading-hint">服务器可能已休眠，首次加载约需 30 秒</p>`;
+    container.appendChild(overlay);
+    return overlay;
+  }
+
+  function removeLoading(overlay) {
+    if (overlay && overlay.parentNode) {
+      overlay.parentNode.removeChild(overlay);
+    }
+  }
+
+  // ── Error 占位 ──
+  function showError(container, message, onRetry) {
+    const el = document.createElement('div');
+    el.className = 'error-placeholder';
+    el.innerHTML = `
+      <p class="error-icon">⚠️</p>
+      <p class="error-text">${message}</p>
+      <p class="error-hint">如果是首次访问，服务器正在从休眠中唤醒，请稍候重试。</p>
+      <button type="button" class="btn btn-primary retry-btn">重新加载</button>
+    `;
+    const btn = el.querySelector('.retry-btn');
+    btn.addEventListener('click', () => {
+      el.innerHTML = '<p class="loading-text" style="text-align:center">重试中…</p>';
+      if (onRetry) onRetry();
+    });
+    container.appendChild(el);
+    return el;
+  }
 
   // ── 初始化 ──
   const params = new URLSearchParams(location.search);
@@ -29,10 +94,24 @@
 
     // 从后端加载邀请信息
     let remoteConfig = null;
+    const appEl = document.getElementById('app');
+    const loadingEl = showLoading(appEl, '正在加载邀请信息…');
+
     try {
-      const resp = await fetch(`${API_BASE}/api/invitations/${id}`);
-      if (resp.ok) remoteConfig = await resp.json();
-    } catch (_) {}
+      const resp = await fetchWithTimeout(`${API_BASE}/api/invitations/${id}`);
+      if (resp.ok) {
+        remoteConfig = await resp.json();
+      } else if (resp.status === 404) {
+        removeLoading(loadingEl);
+        showError(appEl, '邀请不存在或已失效', () => initRecipientMode(id));
+        return;
+      }
+    } catch (err) {
+      console.warn('加载邀请信息失败（冷启动或网络问题）:', err);
+      // 继续用默认值，不阻塞用户
+    } finally {
+      removeLoading(loadingEl);
+    }
 
     const defaults = {
       to: '你',
@@ -225,7 +304,7 @@
 
           // 提交到后端
           try {
-            const resp = await fetch(`${API_BASE}/api/responses`, {
+            const resp = await fetchWithTimeout(`${API_BASE}/api/responses`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -251,20 +330,6 @@
         }
         case 'restart': go(1); break;
       }
-    }
-
-    let toastTimer;
-    function toast(text) {
-      let node = document.querySelector('.toast');
-      if (!node) {
-        node = document.createElement('div');
-        node.className = 'toast';
-        document.body.appendChild(node);
-      }
-      node.textContent = text;
-      requestAnimationFrame(() => node.classList.add('show'));
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => node.classList.remove('show'), 1800);
     }
 
     go(1);
@@ -298,12 +363,16 @@
       $('generateBtn').textContent = '生成中…';
 
       try {
-        const resp = await fetch(`${API_BASE}/api/invitations`, {
+        const resp = await fetchWithTimeout(`${API_BASE}/api/invitations`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ creator_id: creatorId, from_name: from, to_name: to, intro, note })
         });
         const data = await resp.json();
+
+        if (!resp.ok) {
+          throw new Error(data.error || '创建失败');
+        }
 
         const box = $('linkbox');
         box.style.display = 'block';
@@ -328,7 +397,16 @@
         loadInvitations();
       } catch (err) {
         $('linkbox').style.display = 'block';
-        $('linkbox').innerHTML = `<div style="color:#e06c75">❌ 创建失败：${err.message}</div>`;
+        const msg = err.name === 'AbortError'
+          ? '请求超时，服务器可能正在从休眠中唤醒（约需 30 秒），请稍候重试🙏'
+          : `❌ 创建失败：${err.message}`;
+        $('linkbox').innerHTML = `
+          <div style="color:#e06c75">${msg}</div>
+          <button class="btn btn-primary" id="retryCreateBtn" type="button" style="margin-top:12px;width:100%">🔄 重试</button>
+        `;
+        document.getElementById('retryCreateBtn')?.addEventListener('click', () => {
+          $('generateBtn').click();
+        });
       } finally {
         $('generateBtn').disabled = false;
         $('generateBtn').textContent = '✨ 生成邀请链接';
@@ -338,8 +416,14 @@
     // 加载邀请列表
     async function loadInvitations() {
       const container = $('invitationItems');
+      container.innerHTML = '<p class="tip" style="text-align:center;padding:30px 0">加载中…</p>';
       try {
-        const resp = await fetch(`${API_BASE}/api/invitations?creator_id=${encodeURIComponent(creatorId)}`);
+        const resp = await fetchWithTimeout(`${API_BASE}/api/invitations?creator_id=${encodeURIComponent(creatorId)}`);
+
+        if (!resp.ok) {
+          throw new Error('服务器返回错误');
+        }
+
         const list = await resp.json();
 
         if (!list.length) {
@@ -385,8 +469,20 @@
             setTimeout(() => { btn.textContent = '复制'; }, 1500);
           });
         });
-      } catch (_) {
-        container.innerHTML = '<p class="tip" style="text-align:center;padding:30px 0;color:#e06c75">⚠️ 加载失败，请确认服务器已启动</p>';
+      } catch (err) {
+        const isTimeout = err.name === 'AbortError';
+        const msg = isTimeout
+          ? '请求超时，服务器可能正在从休眠中唤醒（约需 30 秒）'
+          : '加载失败，请确认服务器已启动';
+        container.innerHTML = `
+          <div class="tip" style="text-align:center;padding:30px 0;color:#e06c75">
+            ⚠️ ${msg}
+          </div>
+          <div style="text-align:center;padding-bottom:16px">
+            <button class="btn btn-primary" id="retryLoadBtn" type="button" style="min-width:140px">🔄 重试</button>
+          </div>
+        `;
+        document.getElementById('retryLoadBtn')?.addEventListener('click', () => loadInvitations());
       }
     }
 

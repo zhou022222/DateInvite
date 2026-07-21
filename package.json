@@ -1,6 +1,6 @@
 {
   "name": "date-invite-h5",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "description": "约会邀请 H5 (with Supabase backend)",
   "scripts": {

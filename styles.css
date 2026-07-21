@@ -194,6 +194,37 @@ textarea::placeholder { color: #9d8f99; }
 .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translate(-50%, 20px); background: rgba(13,8,13,.92); border: 1px solid rgba(255,255,255,.14); color: #fff; padding: 11px 18px; border-radius: 999px; font-size: 13px; opacity: 0; pointer-events: none; transition: .25s ease; z-index: 99; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+/* ── Loading / 冷启动 ── */
+.loading-overlay {
+  position: absolute; inset: 0; z-index: 50;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: rgba(13,8,13,.88);
+  text-align: center; padding: 40px 24px;
+  backdrop-filter: blur(4px);
+}
+.loading-spinner {
+  width: 48px; height: 48px;
+  border: 3px solid rgba(255,255,255,.1);
+  border-top-color: #e6bd6e;
+  border-radius: 50%;
+  animation: spinz .9s linear infinite;
+  margin-bottom: 20px;
+}
+@keyframes spinz { to { transform: rotate(360deg); } }
+.loading-text { color: #e6bd6e; font-size: 16px; margin-bottom: 10px; }
+.loading-hint { color: #9d8f99; font-size: 12px; line-height: 1.6; }
+
+.error-placeholder {
+  position: absolute; inset: 0; z-index: 50;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: rgba(13,8,13,.92);
+  text-align: center; padding: 40px 30px;
+}
+.error-icon { font-size: 42px; margin-bottom: 14px; }
+.error-text { color: #e06c75; font-size: 16px; margin-bottom: 8px; }
+.error-hint { color: #9d8f99; font-size: 12px; line-height: 1.6; max-width: 300px; margin-bottom: 24px; }
+.error-placeholder .retry-btn { min-width: 140px; text-align: center; display: inline-flex; align-items: center; justify-content: center; }
+
 .sparkle { display: inline-block; animation: twinkle 1.8s ease-in-out infinite; }
 @keyframes twinkle { 50% { transform: scale(1.26) rotate(8deg); filter: brightness(1.3); } }
 
