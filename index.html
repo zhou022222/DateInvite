@@ -12,45 +12,60 @@
 </head>
 <body>
   <div class="phone">
-    <!-- ===== 创作者模式 ===== -->
+    <!-- ===== 创作者模式（单屏） ===== -->
     <div id="creatorMode" class="mode-creator" style="display:none">
-    <main class="creator">
-      <div class="eyebrow">Create your moment</div>
-      <h1>创建一份约会邀请</h1>
-      <p>填写下面几项，生成一个可分享链接。对方打开后可以选择吃什么、去哪里、什么时候见面，回应会自动保存回来。</p>
+      <main class="creator">
+        <div class="creator-header">
+          <div class="eyebrow">Create your moment</div>
+          <h1>创建约会邀请</h1>
+          <p class="creator-desc">填写信息，生成可分享的邀请链接</p>
+        </div>
 
-      <section class="panel" id="createForm">
-        <div class="field">
-          <label for="cr_to">怎么称呼对方</label>
-          <input id="cr_to" maxlength="20" value="你" />
-        </div>
-        <div class="field">
-          <label for="cr_from">怎么称呼你</label>
-          <input id="cr_from" maxlength="30" value="一个很在意你的人" />
-        </div>
-        <div class="field">
-          <label for="cr_intro">首页邀请文案</label>
-          <input id="cr_intro" maxlength="30" value="想约你吃顿好吃的" />
-        </div>
-        <div class="field">
-          <label for="cr_note">补充一句话</label>
-          <textarea id="cr_note" maxlength="80">我认真准备了这份约饭邀请。</textarea>
-        </div>
-        <div class="creator-actions">
-          <button class="btn btn-primary" id="generateBtn" type="button">✨ 生成邀请链接</button>
-        </div>
-        <div id="linkbox" class="linkbox"></div>
-      </section>
+        <section class="panel create-panel" id="createForm">
+          <div class="form-fields" id="formFields">
+            <div class="field">
+              <label for="cr_to">怎么称呼对方</label>
+              <input id="cr_to" maxlength="20" value="你" />
+            </div>
+            <div class="field">
+              <label for="cr_from">怎么称呼你</label>
+              <input id="cr_from" maxlength="30" value="一个很在意你的人" />
+            </div>
+            <div class="field">
+              <label for="cr_intro">首页邀请文案</label>
+              <input id="cr_intro" maxlength="30" value="想约你吃顿好吃的" />
+            </div>
+            <div class="field">
+              <label for="cr_note">补充一句话</label>
+              <textarea id="cr_note" maxlength="80">我认真准备了这份约饭邀请。</textarea>
+            </div>
+            <div class="creator-actions">
+              <button class="btn btn-primary" id="generateBtn" type="button">✨ 生成邀请链接</button>
+            </div>
+          </div>
+          <div id="linkbox" class="linkbox"></div>
+        </section>
 
-      <!-- 已发出的邀请 -->
-      <section id="invitationList" class="panel" style="margin-top:32px;">
-        <h2 style="font-size:18px;font-weight:400;font-family:'ZCOOL XiaoWei',serif;color:#d9c8d1;margin:0 0 16px">📬 已发出的邀请</h2>
-        <div id="invitationItems">
-          <p class="tip" style="text-align:center;padding:30px 0">还没有邀请，创建一个吧 ✨</p>
+        <div class="creator-footer">
+          <button class="btn btn-secondary btn-history" id="historyBtn" type="button">📋 历史记录</button>
         </div>
-      </section>
-    </main>
-  </div>
+      </main>
+    </div>
+
+    <!-- ===== 历史记录模式 ===== -->
+    <div id="historyMode" class="mode-creator" style="display:none">
+      <main class="creator">
+        <div class="creator-header creator-header--back">
+          <button class="btn-back-nav" id="backBtn" type="button">← 返回</button>
+          <h1>历史记录</h1>
+        </div>
+        <section class="panel history-panel" id="invitationList">
+          <div id="invitationItems">
+            <p class="tip" style="text-align:center;padding:30px 0">还没有邀请，创建一个吧 ✨</p>
+          </div>
+        </section>
+      </main>
+    </div>
 
   <!-- ===== 受邀模式（8 屏流程） ===== -->
   <main id="app" class="app" aria-live="polite" style="display:none">

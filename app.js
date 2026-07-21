@@ -341,6 +341,7 @@
   function initCreatorMode() {
     document.getElementById('creatorMode').style.display = '';
     document.getElementById('app').style.display = 'none';
+    document.getElementById('historyMode').style.display = 'none';
 
     // 获取/创建创作者身份
     let creatorId = localStorage.getItem(LS_CREATOR_KEY);
@@ -374,13 +375,16 @@
           throw new Error(data.error || '创建失败');
         }
 
-        const box = $('linkbox');
-        box.style.display = 'block';
-        box.innerHTML = `
-          <div style="margin-bottom:8px;color:#e2bc70;font-size:14px">✅ 邀请已创建！把这个链接发给 TA 👇</div>
+        // 折叠表单，展示链接
+        const panel = $('createForm');
+        const linkbox = $('linkbox');
+        linkbox.innerHTML = `
+          <p class="linkbox-title">✅ 邀请已创建</p>
           <div class="link-copy">${escHtml(data.link)}</div>
-          <button class="btn btn-primary" id="copyLinkBtn" type="button" style="margin-top:12px;width:100%">📋 复制链接</button>
+          <button class="btn btn-primary" id="copyLinkBtn" type="button" style="font-size:14px;min-height:46px">📋 复制链接</button>
         `;
+        // 先显示 linkbox 内容（但不可见），再触发折叠动画
+        panel.classList.add('collapsed');
         document.getElementById('copyLinkBtn').addEventListener('click', () => {
           navigator.clipboard.writeText(data.link).then(() => {
             $('copyLinkBtn').textContent = '✓ 已复制';
@@ -388,23 +392,23 @@
           });
         });
 
-        // 清空表单但保留称呼
-        $('cr_to').value = '';
+        // 清空输入但保留称呼
         $('cr_intro').value = '想约你吃顿好吃的';
         $('cr_note').value = '';
 
-        // 刷新列表
-        loadInvitations();
       } catch (err) {
-        $('linkbox').style.display = 'block';
+        const linkbox = $('linkbox');
+        // 不折叠，直接在表单下方显示错误
+        linkbox.style.display = 'block';
         const msg = err.name === 'AbortError'
           ? '请求超时，服务器可能正在从休眠中唤醒（约需 30 秒），请稍候重试🙏'
           : `❌ 创建失败：${err.message}`;
-        $('linkbox').innerHTML = `
-          <div style="color:#e06c75">${msg}</div>
-          <button class="btn btn-primary" id="retryCreateBtn" type="button" style="margin-top:12px;width:100%">🔄 重试</button>
+        linkbox.innerHTML = `
+          <div style="color:#e06c75;font-size:13px;margin-bottom:10px">${msg}</div>
+          <button class="btn btn-primary" id="retryCreateBtn" type="button" style="min-height:46px;font-size:14px">🔄 重试</button>
         `;
         document.getElementById('retryCreateBtn')?.addEventListener('click', () => {
+          linkbox.style.display = 'none';
           $('generateBtn').click();
         });
       } finally {
@@ -413,83 +417,100 @@
       }
     });
 
-    // 加载邀请列表
-    async function loadInvitations() {
-      const container = $('invitationItems');
-      container.innerHTML = '<p class="tip" style="text-align:center;padding:30px 0">加载中…</p>';
-      try {
-        const resp = await fetchWithTimeout(`${API_BASE}/api/invitations?creator_id=${encodeURIComponent(creatorId)}`);
+    // 历史记录按钮
+    $('historyBtn').addEventListener('click', () => {
+      showHistoryMode(creatorId);
+    });
 
-        if (!resp.ok) {
-          throw new Error('服务器返回错误');
-        }
+    // 返回按钮（历史页）
+    $('backBtn').addEventListener('click', () => {
+      document.getElementById('historyMode').style.display = 'none';
+      document.getElementById('creatorMode').style.display = '';
+    });
+  }
 
-        const list = await resp.json();
+  // ── 显示历史记录页 ──
+  async function showHistoryMode(creatorId) {
+    document.getElementById('creatorMode').style.display = 'none';
+    document.getElementById('historyMode').style.display = '';
 
-        if (!list.length) {
-          container.innerHTML = '<p class="tip" style="text-align:center;padding:30px 0">还没有邀请，创建一个吧 ✨</p>';
-          return;
-        }
+    await loadInvitations(creatorId);
+  }
 
-        container.innerHTML = list.map(inv => {
-          const hasResponse = inv.status === 'responded';
-          const timeStr = inv.responded_at ? inv.responded_at.slice(0, 10) : '';
-          return `
-            <div class="invite-card">
-              <div class="invite-card-header">
-                <span class="invite-to">💌 给 ${escHtml(inv.to_name)}</span>
-                <span class="invite-status ${hasResponse ? 'responded' : 'pending'}">
-                  ${hasResponse ? '✅ 已回应' : '⏳ 等待回应'}
-                </span>
-              </div>
-              ${hasResponse ? `
-                <div class="invite-response">
-                  <span>🍽️ ${escHtml(inv.food)}</span>
-                  <span>📍 ${escHtml(inv.place)}</span>
-                  <span>🕐 ${escHtml(inv.time)}</span>
-                  ${inv.response_message ? `<span>💬 ${escHtml(inv.response_message)}</span>` : ''}
-                </div>
-                <div class="invite-time">${timeStr}</div>
-              ` : `
-                <div class="invite-link-row">
-                  <span class="invite-link-text">${escHtml(`${location.origin}/index.html?id=${inv.id}`)}</span>
-                  <button class="btn-copy-sm" data-link="${escHtml(`${location.origin}/index.html?id=${inv.id}`)}">复制</button>
-                </div>
-                <div class="invite-time">${inv.created_at ? inv.created_at.slice(0, 10) : ''}</div>
-              `}
+  // ── 加载邀请列表 ──
+  async function loadInvitations(creatorId) {
+    const container = document.getElementById('invitationItems');
+    container.innerHTML = '<p class="tip" style="text-align:center;padding:24px 0;color:#9d8f99">加载中…</p>';
+    try {
+      const resp = await fetchWithTimeout(`${API_BASE}/api/invitations?creator_id=${encodeURIComponent(creatorId)}`);
+
+      if (!resp.ok) {
+        throw new Error('服务器返回错误');
+      }
+
+      const list = await resp.json();
+
+      if (!list.length) {
+        container.innerHTML = '<p class="tip" style="text-align:center;padding:40px 0;color:#9d8f99">还没有邀请，创建一个吧 ✨</p>';
+        return;
+      }
+
+      container.innerHTML = list.map(inv => {
+        const hasResponse = inv.status === 'responded';
+        const timeStr = inv.responded_at ? inv.responded_at.slice(0, 10) : '';
+        return `
+          <div class="invite-card">
+            <div class="invite-card-header">
+              <span class="invite-to">💌 给 ${escHtml(inv.to_name)}</span>
+              <span class="invite-status ${hasResponse ? 'responded' : 'pending'}">
+                ${hasResponse ? '✅ 已回应' : '⏳ 等待回应'}
+              </span>
             </div>
-          `;
-        }).join('');
-
-        // 绑定复制按钮
-        container.querySelectorAll('.btn-copy-sm').forEach(btn => {
-          btn.addEventListener('click', () => {
-            navigator.clipboard.writeText(btn.dataset.link);
-            btn.textContent = '✓';
-            setTimeout(() => { btn.textContent = '复制'; }, 1500);
-          });
-        });
-      } catch (err) {
-        const isTimeout = err.name === 'AbortError';
-        const msg = isTimeout
-          ? '请求超时，服务器可能正在从休眠中唤醒（约需 30 秒）'
-          : '加载失败，请确认服务器已启动';
-        container.innerHTML = `
-          <div class="tip" style="text-align:center;padding:30px 0;color:#e06c75">
-            ⚠️ ${msg}
-          </div>
-          <div style="text-align:center;padding-bottom:16px">
-            <button class="btn btn-primary" id="retryLoadBtn" type="button" style="min-width:140px">🔄 重试</button>
+            ${hasResponse ? `
+              <div class="invite-response">
+                <span>🍽️ ${escHtml(inv.food)}</span>
+                <span>📍 ${escHtml(inv.place)}</span>
+                <span>🕐 ${escHtml(inv.time)}</span>
+                ${inv.response_message ? `<span>💬 ${escHtml(inv.response_message)}</span>` : ''}
+              </div>
+              <div class="invite-time">${timeStr}</div>
+            ` : `
+              <div class="invite-link-row">
+                <span class="invite-link-text">${escHtml(`${location.origin}/index.html?id=${inv.id}`)}</span>
+                <button class="btn-copy-sm" data-link="${escHtml(`${location.origin}/index.html?id=${inv.id}`)}">复制</button>
+              </div>
+              <div class="invite-time">${inv.created_at ? inv.created_at.slice(0, 10) : ''}</div>
+            `}
           </div>
         `;
-        document.getElementById('retryLoadBtn')?.addEventListener('click', () => loadInvitations());
-      }
-    }
+      }).join('');
 
-    function escHtml(s) {
-      return String(s).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+      // 绑定复制按钮
+      container.querySelectorAll('.btn-copy-sm').forEach(btn => {
+        btn.addEventListener('click', () => {
+          navigator.clipboard.writeText(btn.dataset.link);
+          btn.textContent = '✓';
+          setTimeout(() => { btn.textContent = '复制'; }, 1500);
+        });
+      });
+    } catch (err) {
+      const isTimeout = err.name === 'AbortError';
+      const msg = isTimeout
+        ? '请求超时，服务器可能正在从休眠中唤醒（约需 30 秒）'
+        : '加载失败，请确认服务器已启动';
+      container.innerHTML = `
+        <div class="tip" style="text-align:center;padding:24px 0;color:#e06c75">
+          ⚠️ ${msg}
+        </div>
+        <div style="text-align:center;padding-bottom:12px">
+          <button class="btn btn-primary" id="retryLoadBtn" type="button" style="min-width:140px">🔄 重试</button>
+        </div>
+      `;
+      document.getElementById('retryLoadBtn')?.addEventListener('click', () => loadInvitations(creatorId));
     }
+  }
 
-    loadInvitations();
+  function escHtml(s) {
+    return String(s).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
   }
 })();
