@@ -33,7 +33,15 @@ body.recipient-mode {
   overflow: hidden;
 }
 
-body.recipient-mode .phone {
+body.creator-mode {
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+body.recipient-mode .phone,
+body.creator-mode .phone {
   overflow: hidden;
 }
 
@@ -343,6 +351,114 @@ textarea::placeholder { color: #9d8f99; }
 .creator-actions .btn { min-width: 160px; }
 .tip { font-size: 12px; color: #988b94; margin-top: 16px; }
 
+body.creator-mode .phone {
+  height: 100dvh;
+  min-height: 0;
+  max-height: 100dvh;
+}
+
+body.creator-mode .mode-creator {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.creator-mode .creator {
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: clamp(18px, 4dvh, 34px) clamp(16px, 5.4cqw, 24px) clamp(14px, 3dvh, 26px);
+}
+
+body.creator-mode .btn-history-icon {
+  top: clamp(14px, 2.8dvh, 22px);
+  right: clamp(12px, 4cqw, 18px);
+  width: clamp(34px, 9.5cqw, 40px);
+  height: clamp(34px, 9.5cqw, 40px);
+}
+
+body.creator-mode .creator .eyebrow {
+  margin-bottom: clamp(8px, 1.5dvh, 16px);
+  padding-right: 48px;
+  font-size: clamp(8px, 2.4cqw, 10px);
+}
+
+body.creator-mode .creator h1 {
+  margin: 0;
+  font-size: clamp(25px, 7.2cqw, 34px);
+  line-height: 1.14;
+}
+
+body.creator-mode .creator > p {
+  margin: clamp(8px, 1.5dvh, 13px) 0 0;
+  max-width: 34em;
+  font-size: clamp(11px, 3.1cqw, 14px);
+  line-height: 1.55;
+}
+
+body.creator-mode .panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: clamp(12px, 2.4dvh, 22px);
+  padding: clamp(14px, 3.6cqw, 22px);
+  border-radius: clamp(18px, 5cqw, 24px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+body.creator-mode #formFields {
+  flex: 1 1 auto;
+  height: 100%;
+  display: grid;
+  grid-template-rows: repeat(3, auto) minmax(0, 1fr) auto;
+  gap: clamp(8px, 1.55dvh, 14px);
+}
+
+body.creator-mode .field {
+  min-height: 0;
+  margin-bottom: 0;
+  gap: clamp(4px, .9dvh, 8px);
+}
+
+body.creator-mode .field label {
+  font-size: clamp(10px, 2.9cqw, 13px);
+}
+
+body.creator-mode .field input,
+body.creator-mode .field textarea {
+  padding: clamp(9px, 1.65dvh, 14px) 12px;
+  border-radius: 13px;
+  font-size: clamp(12px, 3.4cqw, 15px);
+  line-height: 1.35;
+}
+
+body.creator-mode .field textarea {
+  height: 100%;
+  min-height: clamp(54px, 10dvh, 88px);
+  max-height: 100%;
+}
+
+body.creator-mode .creator-actions {
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+body.creator-mode .creator-actions .btn {
+  width: 100%;
+  min-width: 0;
+  min-height: clamp(46px, 7dvh, 56px);
+  font-size: clamp(13px, 3.4cqw, 15px);
+}
+
+body.creator-mode .tip {
+  margin-top: 10px;
+  font-size: 11px;
+}
+
 /* ═════════════════════════════════════
    生成后的邀请函预览
    ═════════════════════════════════════ */
@@ -501,6 +617,102 @@ textarea::placeholder { color: #9d8f99; }
   font-size: 15px;
 }
 
+body.creator-mode .invite-preview {
+  min-height: 0;
+}
+
+body.creator-mode .preview-label {
+  margin-bottom: clamp(6px, 1.2dvh, 12px);
+  font-size: clamp(10px, 2.8cqw, 12px);
+}
+
+body.creator-mode .preview-card {
+  padding: clamp(16px, 3dvh, 28px) clamp(16px, 4.4cqw, 22px);
+  border-radius: clamp(18px, 5cqw, 22px);
+}
+
+body.creator-mode .preview-eyebrow {
+  margin-bottom: clamp(8px, 1.5dvh, 16px);
+  font-size: clamp(8px, 2.3cqw, 10px);
+}
+
+body.creator-mode .preview-seal {
+  width: clamp(40px, 11.5cqw, 54px);
+  height: clamp(40px, 11.5cqw, 54px);
+  margin-bottom: clamp(8px, 1.4dvh, 14px);
+  font-size: clamp(18px, 5cqw, 24px);
+}
+
+body.creator-mode .preview-sub {
+  margin-bottom: 6px;
+  font-size: clamp(10px, 2.8cqw, 12px);
+}
+
+body.creator-mode .preview-title {
+  margin-bottom: clamp(8px, 1.5dvh, 14px);
+  font-size: clamp(18px, 5.4cqw, 22px);
+  line-height: 1.35;
+}
+
+body.creator-mode .preview-message,
+body.creator-mode .preview-note {
+  font-size: clamp(12px, 3.2cqw, 14px);
+  line-height: 1.48;
+}
+
+body.creator-mode .preview-note {
+  min-height: 0;
+}
+
+body.creator-mode .preview-from {
+  margin-top: clamp(8px, 1.5dvh, 16px);
+  font-size: clamp(11px, 3cqw, 13px);
+}
+
+body.creator-mode .linkbox {
+  margin-top: clamp(10px, 1.8dvh, 16px);
+}
+
+body.creator-mode .linkbox-header {
+  margin-bottom: 8px;
+}
+
+body.creator-mode .linkbox-label,
+body.creator-mode .linkbox-status {
+  font-size: clamp(10px, 2.8cqw, 12px);
+}
+
+body.creator-mode .linkbox-row,
+body.creator-mode .linkbox-actions {
+  gap: 8px;
+}
+
+body.creator-mode .linkbox-input,
+body.creator-mode .linkbox-copy {
+  min-height: clamp(40px, 6dvh, 48px);
+}
+
+body.creator-mode .linkbox-input {
+  padding: 9px 12px;
+  font-size: clamp(10px, 2.8cqw, 12px);
+}
+
+body.creator-mode .linkbox-copy {
+  padding: 0 14px;
+  font-size: clamp(12px, 3.2cqw, 14px);
+}
+
+body.creator-mode .linkbox-actions {
+  margin-top: 10px;
+}
+
+body.creator-mode .linkbox-actions .btn {
+  min-height: clamp(42px, 6.6dvh, 50px);
+  padding: 0 14px;
+  font-size: clamp(12px, 3.2cqw, 14px);
+  letter-spacing: .04em;
+}
+
 /* 右上角历史记录入口 */
 .btn-history-icon {
   position: absolute;
@@ -608,6 +820,74 @@ textarea::placeholder { color: #9d8f99; }
   cursor: pointer;
 }
 .invite-time { font-size: 11px; color: #6f6070; margin-top: 6px; }
+.history-count {
+  margin: 0 0 10px;
+  color: #9d8f99;
+  font-size: 11px;
+  text-align: center;
+}
+
+body.creator-mode .creator-header--back {
+  min-height: 0;
+  padding-bottom: 0;
+}
+
+body.creator-mode .creator-header--back h1 {
+  font-size: clamp(22px, 6cqw, 30px);
+}
+
+body.creator-mode .history-panel {
+  margin-top: clamp(12px, 2.4dvh, 22px);
+  padding: clamp(14px, 3.6cqw, 20px);
+}
+
+body.creator-mode #invitationItems {
+  height: 100%;
+  overflow: hidden;
+}
+
+body.creator-mode .invite-card {
+  margin-bottom: clamp(8px, 1.4dvh, 12px);
+  padding: clamp(10px, 2.1dvh, 16px) clamp(12px, 3.6cqw, 18px);
+  border-radius: clamp(14px, 4cqw, 18px);
+}
+
+body.creator-mode .invite-card-header {
+  margin-bottom: 8px;
+}
+
+body.creator-mode .invite-to {
+  min-width: 0;
+  max-width: 62%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: clamp(13px, 3.4cqw, 15px);
+}
+
+body.creator-mode .invite-status {
+  font-size: clamp(10px, 2.8cqw, 12px);
+}
+
+body.creator-mode .invite-response {
+  gap: 6px 12px;
+  font-size: clamp(12px, 3.2cqw, 14px);
+  line-height: 1.45;
+}
+
+body.creator-mode .invite-link-row {
+  margin-bottom: 4px;
+}
+
+body.creator-mode .invite-link-text,
+body.creator-mode .invite-time {
+  font-size: clamp(10px, 2.8cqw, 11px);
+}
+
+body.creator-mode .btn-copy-sm {
+  padding: 4px 10px;
+  font-size: 11px;
+}
 
 /* =====================================
    受邀模式高级版
@@ -1131,5 +1411,148 @@ body.recipient-mode textarea {
   }
   .app .btn {
     min-height: 48px;
+  }
+}
+
+@media (min-width: 480px) {
+  body.creator-mode .phone,
+  body.recipient-mode .phone {
+    height: min(920px, 96dvh);
+    max-height: 96dvh;
+    min-height: 0;
+  }
+
+  body.creator-mode .mode-creator,
+  body.creator-mode .creator {
+    border-radius: 36px;
+  }
+}
+
+body.recipient-mode .app .title--cover {
+  font-size: clamp(22px, 6.25cqw, 28px);
+  line-height: 1.42;
+}
+
+body.recipient-mode .app .title--compact {
+  font-size: clamp(20px, 5.6cqw, 25px);
+  line-height: 1.36;
+}
+
+body.recipient-mode .app .title .gold-word {
+  font-size: 1em;
+}
+
+body.recipient-mode .app .hero--cover {
+  grid-template-rows: minmax(0, .86fr) minmax(0, .62fr) auto;
+}
+
+@media (max-height: 740px) {
+  body.creator-mode .creator {
+    padding-top: clamp(14px, 2.6dvh, 22px);
+    padding-bottom: clamp(10px, 2dvh, 18px);
+  }
+
+  body.creator-mode .creator .eyebrow {
+    margin-bottom: 7px;
+  }
+
+  body.creator-mode .creator h1 {
+    font-size: clamp(22px, 6.4cqw, 30px);
+  }
+
+  body.creator-mode .creator > p {
+    margin-top: 7px;
+    font-size: clamp(10px, 2.8cqw, 12px);
+    line-height: 1.45;
+  }
+
+  body.creator-mode .panel {
+    margin-top: 10px;
+    padding: clamp(12px, 3.2cqw, 18px);
+  }
+
+  body.creator-mode #formFields {
+    gap: clamp(6px, 1.1dvh, 10px);
+  }
+
+  body.creator-mode .field input,
+  body.creator-mode .field textarea {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  body.creator-mode .field textarea {
+    min-height: clamp(46px, 8dvh, 66px);
+  }
+
+  body.creator-mode .creator-actions .btn,
+  body.creator-mode .linkbox-actions .btn {
+    min-height: 42px;
+  }
+
+  body.creator-mode .preview-card {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  body.creator-mode .preview-seal {
+    width: 38px;
+    height: 38px;
+  }
+
+  body.creator-mode .preview-message,
+  body.creator-mode .preview-note {
+    line-height: 1.38;
+  }
+
+  body.recipient-mode .app .title--cover {
+    font-size: clamp(20px, 5.7cqw, 25px);
+    line-height: 1.34;
+  }
+
+  body.recipient-mode .app .subtitle {
+    margin-top: 8px;
+  }
+
+  body.recipient-mode .app .art--premium {
+    width: min(64cqw, 238px);
+    height: min(22dvh, 158px);
+  }
+}
+
+@media (max-width: 340px), (max-height: 620px) {
+  body.creator-mode .creator > p {
+    display: none;
+  }
+
+  body.creator-mode .creator h1 {
+    font-size: clamp(20px, 6.2cqw, 26px);
+  }
+
+  body.creator-mode .panel {
+    margin-top: 8px;
+  }
+
+  body.creator-mode .field label {
+    font-size: 10px;
+  }
+
+  body.creator-mode .field input,
+  body.creator-mode .field textarea {
+    font-size: 12px;
+  }
+
+  body.creator-mode .linkbox-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  body.recipient-mode .app .screen {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  body.recipient-mode .app .title--cover {
+    font-size: clamp(18px, 5.4cqw, 22px);
   }
 }

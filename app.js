@@ -84,7 +84,7 @@
   } else {
     document.body.classList.add('creator-mode');
     document.body.classList.remove('recipient-mode');
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = 'hidden';
     // ══════════════ 创作者模式 ══════════════
     initCreatorMode();
   }
@@ -437,7 +437,7 @@
           window.open(data.link, '_blank');
         });
         document.getElementById('newInviteBtn').addEventListener('click', () => {
-          $('formFields').style.display = 'block';
+          $('formFields').style.display = '';
           preview.style.display = 'none';
           box.style.display = 'none';
           box.classList.remove('show');
@@ -509,7 +509,8 @@
         return;
       }
 
-      container.innerHTML = list.map(inv => {
+      const visibleList = list.slice(0, 3);
+      container.innerHTML = `${list.length > visibleList.length ? `<p class="history-count">最近 ${visibleList.length} 条 / 共 ${list.length} 条</p>` : ''}${visibleList.map(inv => {
         const hasResponse = inv.status === 'responded';
         const timeStr = inv.responded_at ? inv.responded_at.slice(0, 10) : '';
         return `
@@ -537,7 +538,7 @@
             `}
           </div>
         `;
-      }).join('');
+      }).join('')}`;
 
       // 绑定复制按钮
       container.querySelectorAll('.btn-copy-sm').forEach(btn => {
