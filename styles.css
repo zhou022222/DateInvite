@@ -136,6 +136,20 @@ button { -webkit-tap-highlight-color: transparent; }
 
 .hero { text-align: center; margin: auto 0; }
 .hero--raised { transform: translateY(-5vh); }
+
+/* 首页/第二页：上下分散布局 */
+.hero--spread {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: calc(100svh - 108px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  margin: 0;
+}
+.hero--spread .eyebrow { margin-top: 6px; margin-bottom: 0; }
+.hero--spread .title { margin-top: 4px; }
+.hero--spread .subtitle { margin-top: 10px; }
+.hero--spread .art { margin: 16px 0; }
+.hero--spread .actions { margin-bottom: 10px; }
 .eyebrow { color: var(--gold); font-size: 9px; letter-spacing: .32em; text-transform: uppercase; margin-bottom: 14px; }
 .title {
   margin: 0;

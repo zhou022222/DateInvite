@@ -160,7 +160,7 @@
 
     const pages = {
       1: () => `
-        <div class="hero">
+        <div class="hero hero--spread">
           <div class="eyebrow">A moment for ${esc(config.to)}</div>
           <h1 class="title">${esc(config.intro)}<br>准备了一个小 <span class="gold">Moment</span></h1>
           <p class="subtitle">请收下这份约饭邀请</p>
@@ -168,7 +168,7 @@
           ${actions({action:'next', label:'轻触打开'})}
         </div>`,
       2: () => `
-        <div class="hero">
+        <div class="hero hero--spread">
           <div class="eyebrow">A little something</div>
           <h1 class="title">来自<br><span class="gold">${esc(config.from)}</span>。</h1>
           <p class="subtitle">TA 想认真约你吃一顿好吃的。</p>
